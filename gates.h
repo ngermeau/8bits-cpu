@@ -2,6 +2,7 @@
 
 namespace gates {
 
-  bool andGate(bool inputA, bool inputB); 
+  bool andGate(bool a, bool b); 
+  bool nandGate(bool a, bool b); 
 
 }
