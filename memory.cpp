@@ -7,28 +7,56 @@ using namespace gates;
 
 namespace memory {
 
-  Bit updateBit(Bit bit,bool value, bool set){
+  void updateBit(Bit &bit,bool value, bool set){
     bool gate1 = nandGate(value,set);
     bool gate2 = nandGate(gate1,set);
     bool gate4 = nandGate(gate2,bit.value);
     bool gate3 = nandGate(gate4,gate1);
-    Bit new_bit = {gate3};
-    return new_bit;
+    bit.value = {gate3};
   }
-
+ 
+  void updateByte(Byte &byte,bool inputs[8], bool set){
+    for (int i=0; i < 8; i++){
+      updateBit(byte.value[i],inputs[i],set);
+    }
+  }
+  
+  
 }
 
 using namespace memory;
-TEST_CASE( "Life, the universe and everything", "[42][theAnswer]" ) {
+TEST_CASE( "Bit", "[memory]" ) {
     Bit falsyBit;
-    REQUIRE(updateBit(falsyBit,true,false).value == false);
-    REQUIRE(updateBit(falsyBit,false,false).value == false);
-    REQUIRE(updateBit(falsyBit,false,true).value == false);
-    REQUIRE(updateBit(falsyBit,true,true).value == true);
+    updateBit(falsyBit,true,false); 
+    REQUIRE(falsyBit.value == false);
+
+    updateBit(falsyBit,false,false);
+    REQUIRE(falsyBit.value == false);
+
+    updateBit(falsyBit,false,true);
+    REQUIRE(falsyBit.value == false);
+
+    updateBit(falsyBit,true,true);
+    REQUIRE(falsyBit.value == true);
 
     Bit truthyBit = { true };
-    REQUIRE(updateBit(truthyBit,true,false).value == true);
-    REQUIRE(updateBit(truthyBit,false,false).value == true);
-    REQUIRE(updateBit(truthyBit,false,true).value == false);
-    REQUIRE(updateBit(truthyBit,true,true).value == true);
+    updateBit(truthyBit,true,false); 
+    REQUIRE(truthyBit.value == true);
+
+    updateBit(truthyBit,false,false);
+    REQUIRE(truthyBit.value == true);
+
+    updateBit(truthyBit,false,true);
+    REQUIRE(truthyBit.value == false);
+
+    updateBit(truthyBit,true,true);
+    REQUIRE(truthyBit.value == true);
+}
+
+TEST_CASE( "Byte", "[memory]" ) {
+    Byte byte; 
+    bool inputs[8] = {true,false,true,true,false,true,false,false};
+    updateByte(byte,inputs,false);
+    REQUIRE(byte.value == false); //comparing array problem (use std::arrays ?)
+
 }
