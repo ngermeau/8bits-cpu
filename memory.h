@@ -1,8 +1,8 @@
 namespace memory { 
 
   struct Bit {
-    bool value;
+    bool value = true;
   };
 
-  Bit hola(bool i, bool s);
+  Bit updateBit(bool i, bool s);
 }
