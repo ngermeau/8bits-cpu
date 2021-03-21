@@ -1,7 +1,7 @@
 namespace memory { 
 
   struct Bit {
-    bool value = true;
+    bool value = false;
   };
 
   Bit updateBit(bool i, bool s);
