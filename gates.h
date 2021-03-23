@@ -1,8 +1,17 @@
 #pragma once
 
 namespace gates {
+  
+  struct AndGate{
+    bool value = false;
+  };
 
-  bool andGate(bool a, bool b); 
-  bool nandGate(bool a, bool b); 
+  struct NandGate{
+    bool value = false;
+  };
+
+  void updateAndGate(AndGate &AndGate, bool a, bool b); 
+  void updateNandGate(AndGate &AndGate, bool a, bool b); 
 
 }
+

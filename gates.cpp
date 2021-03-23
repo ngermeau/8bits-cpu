@@ -1,14 +1,15 @@
 #include "gates.h"
 
 namespace gates { 
-
-  bool andGate(bool a, bool b){
-    return a && b;
+  
+  void updateAndGate(AndGate &andGate, bool a, bool b){
+    andGate.value = a && b;
   }
 
-  bool nandGate(bool a, bool b){
-    return !andGate(a,b);
+  void updateNandGate(AndGate &andGate, bool a, bool b){
+    andGate.value = !(a && b);
   }
+
 }
 
 
