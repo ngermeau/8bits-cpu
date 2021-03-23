@@ -21,12 +21,6 @@ namespace memory {
     }
   }
   
-  void updateEnabler(Enabler &enabler,bool inputs[8], bool enable){
-    for (int i = 0; i < 8; i++){
-      updateAndGate(enabler.value[i],inputs[i],enable);
-    }
-  }
-
   void updateRegistor(Registor &registor,bool inputs[8], bool set){
     updateByte(registor.byte,inputs[8],set);
   }
