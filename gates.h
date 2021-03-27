@@ -10,8 +10,8 @@ namespace gates {
     bool value = false;
   };
 
-  void updateAndGate(AndGate &AndGate, bool a, bool b); 
-  void updateNandGate(AndGate &AndGate, bool a, bool b); 
+  void setAndGate(AndGate &andGate, bool a, bool b); 
+  void setNandGate(NandGate &nandGate, bool a, bool b); 
 
 }
 

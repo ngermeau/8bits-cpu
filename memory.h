@@ -8,22 +8,18 @@ using gates::NandGate;
 namespace memory { 
 
   struct Bit {
-    AndGate gate1,gate2,gate3,gate4; 
+    array<NandGate,4> gates;
     bool value = false;
   };
   
   struct Byte {
-    array<Bit, 8>  value; 
-  };
-
-  struct Enabler { 
-    array<AndGate, 8> value;
+    array<Bit, 8> value; 
   };
 
   struct Registor {
     Byte byte;
-    Enabler enabler;
   };
 
-  Bit updateBit(bool i, bool s);
+  void setBit(Bit &bit, bool i, bool s);
+
 }

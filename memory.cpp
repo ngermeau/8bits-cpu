@@ -7,75 +7,117 @@ using namespace gates;
 
 namespace memory {
 
-  void updateBit(Bit &bit,bool value, bool set){
-    updateNandGate(bit.gate1,value,set);
-    updateNandGate(bit.gate2,bit.gate1.value,set);
-    updateNandGate(bit.gate4,bit.gate2.value,bit.value);
-    updateNandGate(bit.gate3,bit.gate4.value,bit.gate1.value);
-    bit.value = {bit.gate3.value};
+  void setBit(Bit &bit,bool value, bool set){
+    setNandGate(bit.gates[0],value,set);
+    setNandGate(bit.gates[1],bit.gates[0].value,set);
+    setNandGate(bit.gates[3],bit.gates[1].value,bit.value);
+    setNandGate(bit.gates[2],bit.gates[3].value,bit.gates[0].value);
+    bit.value = {bit.gates[2].value};
   }
  
-  void updateByte(Byte &byte,bool inputs[8], bool set){
+  void setByte(Byte &byte,array<bool,8> inputs, bool set){
     for (int i=0; i < 8; i++){
-      updateBit(byte.value[i],inputs[i],set);
+      setBit(byte.value[i],inputs[i],set);
     }
   }
   
-  void updateRegistor(Registor &registor,bool inputs[8], bool set){
-    updateByte(registor.byte,inputs[8],set);
-  }
- 
-  bool*  enableRegistor(Registor &registor, bool enable){
-    for (int i = 0; i< 8; i++){
-      updateNandGate(registor.enabler.value[i],registor.byte.value[i].value, enable);
+  array<bool,8> byteToBool(Byte byte){
+    array<bool,8> values;
+    for (int i=0; i < 8; i++){
+      values[i] = byte.value[i].value; 
     }
-   // print the output of the enabler nandgates
-  } 
-       
-  //}
+    return values;
+  }
+  
+  array<bool,8> enabler(array<bool,8> inputs, bool enable){
+    array<AndGate, 8> enabler;
+
+    for (int i=0; i < 8; i++){
+      setAndGate(enabler[i],inputs[i], enable);
+    }
+
+    array<bool,8> values;
+    for (int i=0; i < 8; i++){
+      values[i] = enabler[i].value;
+    }
+    return values;
+  }
+  
+  void setRegistor(Registor &registor,array<bool,8> inputs, bool set){
+    setByte(registor.byte,inputs,set);
+  }
+
+  array<bool,8> enableRegistor(Registor registor, bool enable){
+    return enabler(byteToBool(registor.byte),enable);
+  }
 }
 
 using namespace memory;
 TEST_CASE( "Bit", "[memory]" ) {
     Bit falsyBit;
-    updateBit(falsyBit,true,false); 
+    setBit(falsyBit,true,false); 
     REQUIRE(falsyBit.value == false);
 
-    updateBit(falsyBit,false,false);
+    setBit(falsyBit,false,false);
     REQUIRE(falsyBit.value == false);
 
-    updateBit(falsyBit,false,true);
+    setBit(falsyBit,false,true);
     REQUIRE(falsyBit.value == false);
 
-    updateBit(falsyBit,true,true);
+    setBit(falsyBit,true,true);
     REQUIRE(falsyBit.value == true);
 
-    Bit truthyBit = { true };
-    updateBit(truthyBit,true,false); 
+    Bit truthyBit;
+    truthyBit.value = true;
+    setBit(truthyBit,true,false); 
     REQUIRE(truthyBit.value == true);
 
-    updateBit(truthyBit,false,false);
+    setBit(truthyBit,false,false);
     REQUIRE(truthyBit.value == true);
 
-    updateBit(truthyBit,false,true);
+    setBit(truthyBit,false,true);
     REQUIRE(truthyBit.value == false);
 
-    updateBit(truthyBit,true,true);
+    setBit(truthyBit,true,true);
     REQUIRE(truthyBit.value == true);
 }
 
 TEST_CASE( "Byte", "[memory]" ) {
-    Byte byte1; 
-    bool inputs[8] = {true,false,true,true,false,true,false,false};
+    Byte byte;
+    array<bool,8> inputs = {true,false,true,true,false,true,false,false};
 
-    updateByte(byte1,inputs,true);
+    setByte(byte,inputs,true);
     for (int i = 0; i< 8; ++i){
-      REQUIRE(byte1.value[i].value == inputs[i]); 
+      REQUIRE(byte.value[i].value == inputs[i]); 
     }
     
     Byte byte2;
-    updateByte(byte2,inputs,false);
+    setByte(byte2,inputs,false);
     for (int i = 0; i< 8; ++i){
       REQUIRE(byte2.value[i].value == false); 
     }
 }
+
+TEST_CASE( "Registor", "[memory]") {
+    Registor registor;
+    array<bool,8> inputs = {true,false,true,true,false,true,false,false};
+
+    setRegistor(registor, inputs, true);
+    for (int i = 0; i< 8; ++i){
+      REQUIRE(registor.byte.value[i].value == inputs[i]); 
+    }
+
+    Registor registor2;
+    setRegistor(registor2, inputs, false);
+    for (int i = 0; i< 8; ++i){
+      REQUIRE(registor2.byte.value[i].value == false); 
+    }
+
+    array<bool,8> disabledRegistor = {false,false,false,false,false,false,false,false};
+    array<bool,8> registorValue = enableRegistor(registor, false);
+    REQUIRE(registorValue == disabledRegistor); 
+
+    registorValue = enableRegistor(registor, true);
+    REQUIRE(registorValue == inputs); 
+}
+
