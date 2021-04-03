@@ -30,19 +30,35 @@ namespace memory {
   }
   
   array<bool,8> enabler(array<bool,8> inputs, bool enable){
-    array<AndGate, 8> enabler;
+    array<AndGate, 8> andGates;
 
     for (int i=0; i < 8; i++){
-      setAndGate(enabler[i],inputs[i], enable);
+      setAndGate(andGates[i],inputs[i], enable);
     }
 
     array<bool,8> values;
     for (int i=0; i < 8; i++){
-      values[i] = enabler[i].value;
+      values[i] = andGates[i].value;
     }
     return values;
   }
   
+  array<bool,4> decoder2x4 (bool a, bool b, bool c, bool d){
+      //https://www.elprocus.com/designing-4-to-16-decoder-using-3-to-8-decoder/
+      array<TripleAndGate,16> tripleAndGates; 
+      array<NotGate,4> notGates;
+
+      setNotGate(notGates[0],a);
+      setNotGate(notGates[1],b);
+      setNotGate(notGates[2],c);
+      setNotGate(notGates[3],d);
+
+      setTripleAndGate(tripleAndGates[0], notGates[0].value, notGates[1].value, notGates[2].value, notGates[3].value);
+      setTripleAndGate(tripleAndGates[0], notGates[0].value, notGates[1].value,c, notGates[3].value);
+
+  }
+
+
   void setRegistor(Registor &registor,array<bool,8> inputs, bool set){
     setByte(registor.byte,inputs,set);
   }
