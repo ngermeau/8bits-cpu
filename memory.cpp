@@ -7,29 +7,22 @@ using namespace gates;
 
 namespace memory {
 
-  void setBit(Bit &bit,bool value, bool set){
-    setNandGate(bit.gates[0],value,set);
-    setNandGate(bit.gates[1],bit.gates[0].value,set);
-    setNandGate(bit.gates[3],bit.gates[1].value,bit.value);
-    setNandGate(bit.gates[2],bit.gates[3].value,bit.gates[0].value);
-    bit.value = {bit.gates[2].value};
+  void setBit(Bit *bit,bool value, bool set){
+    bool gate0 = andGate(value,set);
+    bool gate1 = andGate(gate0,set);
+    bool gate3 = andGate(gate1,(*bit).value);
+    bool gate2 = andGate(gate3,gate0);
+    (*bit).value = gate2;
   }
  
-  void setByte(Byte &byte,array<bool,8> inputs, bool set){
+  void setByte(Byte *byte, bool inputs[8],bool set){
     for (int i=0; i < 8; i++){
-      setBit(byte.value[i],inputs[i],set);
+      setBit(&(*byte).bits[i],inputs[i],set);
+      (*byte).bools[i] = inputs[i];
     }
   }
   
-  array<bool,8> byteToBool(Byte byte){
-    array<bool,8> values;
-    for (int i=0; i < 8; i++){
-      values[i] = byte.value[i].value; 
-    }
-    return values;
-  }
-  
-  array<bool,8> enabler(array<bool,8> inputs, bool enable){
+    bool * enabl(bool inputs[8],bool enable){
     array<AndGate, 8> andGates;
 
     for (int i=0; i < 8; i++){
