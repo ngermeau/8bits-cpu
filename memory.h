@@ -9,14 +9,17 @@ namespace memory {
   
   struct Byte {
     Bit bits [8]; 
-    bool bools [8]; // dup of bits but for sake of code readibility
+    bool value[8]; // dup of bits but for sake of code readibility
   };
 
-  struct Registor {
+  struct Reg {  
     Byte byte;
   };
 
   void setBit(Bit *bit, bool i, bool s);
   void setByte(Byte *byte, bool inputs[8], bool set);
+  bool* enabl(bool inputs[8],bool enable);
+  void setReg(Reg *reg, bool inputs[8],bool set);
+  bool* enablReg(Reg *reg, bool enable);
 
 }

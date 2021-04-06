@@ -14,8 +14,8 @@ namespace gates {
     return !a;
   }
 
-  bool tripleAndGate(bool a, bool b, bool c, bool d) {
-    return andGate(andGate(andGate(a,b),c),d);
+  bool doubleAndGate(bool a, bool b, bool c) {
+    return andGate(andGate(a,b),c);
   }
 }
 
