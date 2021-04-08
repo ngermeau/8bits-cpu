@@ -7,6 +7,26 @@ using namespace gates;
 
 namespace memory {
 
+  void displayBools(bool inputs[8]){
+    for (int z=0; z<8; z++){
+       if (inputs[z]){
+            printf("1");
+          }else{
+            printf("0");
+          }
+      }
+    printf(" | ");
+  }
+  
+  void displayRam(Ram *ram){
+    for (int i = 0; i< 16; i++){
+      for (int j = 0; j<16; j++){
+        displayBools((*ram).regs[i][j].byte.value);
+      }
+      printf("\n");
+    }
+  }
+
   void setBit(Bit *bit,bool value, bool set){
     bool gate0 = nandGate(value,set);
     bool gate1 = nandGate(gate0,set);
@@ -34,24 +54,69 @@ namespace memory {
     return outputs;
   }
   
-  bool*  enablReg(Reg reg, bool enable){
+  bool* enablReg(Reg reg, bool enable){
     return enabl(reg.byte.value,enable);
   }
-
-  bool* decoder2x4 (bool a, bool b){
-    bool notGate1 = notGate(a);
-    bool notGate2 = notGate(b);
+  
+  bool* decoder2x4(bool a, bool b){
+    bool notGatea = notGate(a);
+    bool notGateb = notGate(b);
 
     bool* outputs = (bool*) malloc(4);
-    outputs[0] = andGate(notGate1, notGate2);
-    outputs[1] = andGate(notGate1,b);
-    outputs[2] = andGate(a,notGate2);
+    outputs[0] = andGate(notGatea, notGateb);
+    outputs[1] = andGate(notGatea,b);
+    outputs[2] = andGate(a,notGateb);
     outputs[3] = andGate(a,b);
     return outputs;
   }
   
+  //https://line.17qq.com/articles/igibijgpbz.html
+  int decoder4x16(bool e, bool a, bool b, bool c){
+    bool notGatee = notGate(e);
+    bool notGatea = notGate(a);
+    bool notGateb = notGate(b);
+    bool notGatec = notGate(c);
+    bool outputs[16];
+    outputs[0] = tripleAndGate(notGatee,notGatea,notGateb,notGatec);
+    outputs[1] = tripleAndGate(notGatee,notGatea,notGateb,c);
+    outputs[2] = tripleAndGate(notGatee,notGatea,b,notGatec);
+    outputs[3] = tripleAndGate(notGatee,notGatea,b,c);
+    outputs[4] = tripleAndGate(notGatee,a,notGateb,notGatec);
+    outputs[5] = tripleAndGate(notGatee,a,notGateb,c);
+    outputs[6] = tripleAndGate(notGatee,a,b,notGatec);
+    outputs[7] = tripleAndGate(notGatee,a,b,c);
+    outputs[8] = tripleAndGate(e,notGatea,notGateb,notGatec);
+    outputs[9] = tripleAndGate(e,notGatea,notGateb,c);
+    outputs[10] = tripleAndGate(e,notGatea,b,notGatec);
+    outputs[11] = tripleAndGate(e,notGatea,b,c);
+    outputs[12] = tripleAndGate(e,a,notGateb,notGatec);
+    outputs[13] = tripleAndGate(e,a,notGateb,c);
+    outputs[14] = tripleAndGate(e,a,b,notGatec);
+    outputs[15] = tripleAndGate(e,a,b,c);
+    
+    int i;
+    for (i=0; i< 16; i++){
+      if(outputs[i]){ break; }
+    }
+    return i; //todo, this is bad because if we can't find anything then what ? 
+  }
 
-      //https://www.elprocus.com/designing-4-to-16-decoder-using-3-to-8-decoder/
+
+  void memoryCell(Ram* ram, Reg address, Bus* bus, bool enable, bool set){ 
+    bool* addressValue = address.byte.value;
+    int v = decoder4x16(addressValue[0],addressValue[1],addressValue[2],addressValue[3]);
+    int h = decoder4x16(addressValue[4],addressValue[5],addressValue[6],addressValue[7]);
+    printf("vert %d: ", v);
+    printf("hori %d: ", h);
+    printf("\n");
+    if (andGate(andGate(true,true), set)){
+        setReg(&(*ram).regs[h][v],(*bus).value, set); 
+    }else {
+        memcpy((*bus).value,(*ram).regs[h][v].byte.value,sizeof((*bus).value));
+    }
+  }
+  
+
 }
 
 using namespace memory;
@@ -104,7 +169,7 @@ TEST_CASE( "Byte", "[memory]" ) {
     }
 }
 
-TEST_CASE( "Registor", "[memory]") {
+TEST_CASE( "Reg", "[memory]") {
     Reg reg;
     bool inputs[8] = {true,false,true,true,false,true,false,false};
     
@@ -136,3 +201,21 @@ TEST_CASE( "Registor", "[memory]") {
     free(outputs);
 }
 
+
+
+TEST_CASE( "memory", "[memory]") {
+  Ram ram;
+  Reg address;
+  Bus bus; 
+  bool addressValue[8] = {true,false,false,false,true,false,true,false};
+  memcpy(address.byte.value, addressValue, 8);
+  bool busValue[8] = {false,false,true,true,false,true,false,false};
+  memcpy(bus.value, busValue, 8);
+  memoryCell(&ram,address,&bus,false, true);
+  displayRam(&ram);
+  
+  memcpy(address.byte.value, addressValue, 8);
+  memoryCell(&ram,address,&bus,false, true);
+  // need to test enable
+
+}
