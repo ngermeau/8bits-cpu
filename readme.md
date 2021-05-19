@@ -20,3 +20,17 @@ stepper
   step 5    
   step 6    
   step 7    
+
+cpu:
+  registers 
+  acc
+  tmp 
+  IR 
+  index 
+
+memory: 
+  mar 
+  ram 
+   
+bus: 
+  value  
