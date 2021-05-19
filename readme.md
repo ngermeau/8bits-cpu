@@ -1,6 +1,10 @@
 overview
 #
 
+1) load the program into memory 
+2) run the computer (clock start to create cycle)
+
+
 clock    
 generate cycle:    
   1 cycle = down and up   
