@@ -8,11 +8,11 @@ generate cycle:
 
 stepper    
   move from step to step    
-  step 1 
-  step 2
-  step 3 
+  step 1     
+  step 2    
+  step 3     
       we didn't execute anything, just loaded the next instruction from ram into the registry and increment by 1 the index
-  step 4 
-  step 5 
-  step 6
-  step 7
+  step 4    
+  step 5    
+  step 6    
+  step 7    
