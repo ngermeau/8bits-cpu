@@ -34,3 +34,6 @@ memory:
    
 bus: 
   value  
+  
+  
+  find the link between a 1 in an instruction for defining a register and the register on the graph 
