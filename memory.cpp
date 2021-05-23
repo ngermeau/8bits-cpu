@@ -58,16 +58,20 @@ namespace memory {
     return enabl(reg.byte.value,enable);
   }
   
-  bool* decoder2x4(bool a, bool b){
+  int decoder2x4(bool a, bool b){
     bool notGatea = notGate(a);
     bool notGateb = notGate(b);
-
-    bool* outputs = (bool*) malloc(4);
+  
+    bool outputs[4];
     outputs[0] = andGate(notGatea, notGateb);
     outputs[1] = andGate(notGatea,b);
     outputs[2] = andGate(a,notGateb);
     outputs[3] = andGate(a,b);
-    return outputs;
+    int i;
+    for (i=0; i< 16; i++){
+      if(outputs[i]){ break; }
+    }
+    return i; //todo, this is bad because if we can't find anything then what ? 
   }
   
   //https://line.17qq.com/articles/igibijgpbz.html
@@ -101,6 +105,12 @@ namespace memory {
     return i; //todo, this is bad because if we can't find anything then what ? 
   }
 
+  
+  bool* rigtShifter(bool inputs[8]){
+      for (int i = 0; i < 8; i++){
+
+      }
+  }
 
   void memoryCell(Ram* ram, Reg address, Bus* bus, bool enable, bool set){ 
     bool* addressValue = address.byte.value;
@@ -122,7 +132,7 @@ namespace memory {
 using namespace memory;
 TEST_CASE( "Bit", "[memory]" ) {
 
-    // Update bit when initial state is false 
+     // Update bit when initial state is false 
     Bit falsyBit;
     setBit(&falsyBit,true,false); 
     REQUIRE(falsyBit.value == false);

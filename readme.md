@@ -1,3 +1,7 @@
+# Todo
+[ ] ajouter l'utilisation du bus 
+[ ] clock e,s, en fonction de leur valeur on execute la partie d'une step (ex step 1enable/set)
+
 overview
 #
 
