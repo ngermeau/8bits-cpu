@@ -2,27 +2,25 @@
 #include <stdio.h>
 #include <unistd.h>
 
-
 typedef __uint8_t byte;
 
 struct Memory  
 {
-    bool memoryAddressRegister[8];
-    bool ram[16][16][8];
+    byte mar;
+    byte ram[16][16];
 };
 
 struct CPU {
-  byte instructionAddressRegister;
-  byte instructionRegister;
-  byte bus1[8];
-  byte tmp[8];
-  byte acc[8];
+  byte iar;
+  byte bus1;
+  byte tmp;
+  byte acc;
 };
 
 struct Computer {
   struct Memory memory;
   struct CPU cpu;
-  bool bus[8];
+  byte bus;
 };
 
 
@@ -30,39 +28,32 @@ int currentStep = 1;
 
 struct Computer computer;
 
-
-void executeAlu(opcode){
-  __uint16_t test; 
-  uint8_t bla;
-  test =3;
-  /* if (opcode == 0){   //add */
-  /*   computer.bus */ 
-  /* } */
+void alu(byte opcode){
+  if (opcode == 0){   
+    computer.cpu.acc = computer.bus + computer.cpu.bus1;
+  }
 }
-
 
 void execute_step1(){
   
-  printf("step 1, put IAR into MAR and increment IAR of one (result in ACC) \n");
-  // enable    //put bus1 to 1 and put IAR on the bus
-  computer.cpu.bus1[7] = true; 
-  memcpy(computer.bus,computer.cpu.instructionAddressRegister,sizeof(computer.bus));
+  // enable    
+  // put bus1 to 1 and put IAR on the bus
+  computer.cpu.bus1 = 1; 
+  computer.bus = computer.cpu.iar;
   
-  // ask ALU to compute (Bus input + bus 1)
   // set 
-  // put MAR from bus (IAR value) 
-  // put value of ALU to ACC
-  executeAlu(opcode);
-  memcpy(computer.memory.memoryAddressRegister,computer.bus,sizeof(computer.bus));
-  memcpy(computer.cpu.acc, alu.value ,sizeof(computer.bus));
+  // ALU compute new IAR (Bus input + bus 1) and put it into ACC
+  // put bus (IAR value) into MAR 
+  alu(0);
+  computer.memory.mar = computer.bus;
 }
 
 
 
 void execute_step2(){
   printf("step 2, put instruction from memory into IR \n");     
-  computer.bus.value = fetchInstruction(computer.memory.memoryAddressRegister)
-  computer.cpu.instructionRegister = computer.bus.value;
+  /* computer.bus.value = fetchInstruction(computer.memory.memoryAddressRegister) */
+  /* computer.cpu.instructionRegister = computer.bus.value; */
 }
 
 void execute_step3(){
@@ -91,6 +82,7 @@ void cycle(){
   for (int i = 0; i < 10; i++){
     // each step is one cycle 
     do_step();
+    printf("iar %i", computer.cpu.iar);
   }
 }
 
