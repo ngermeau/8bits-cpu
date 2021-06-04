@@ -30,16 +30,20 @@ int currentStep = 1;
 
 struct Computer computer;
 
-void alu(byte opcode){
+//remove bus1 as state and pass it along  
+void alu(byte opcode, byte bus1){
+  byte op1 = computer.bus;
+  byte op2 = bus1 ? bus1 : computer.cpu.tmp;
+
   if (opcode == 0){   
-    computer.cpu.acc = computer.bus + computer.cpu.bus1;
+    computer.cpu.acc = op1 + op2;
+    // carry flag and such ? 
   }
 }
 
 void execute_step1(){
-  computer.cpu.bus1 = 1; // enable: put bus1 to 1 and put IAR on the bus
   computer.bus = computer.cpu.iar;
-  alu(0); // set ALU compute new IAR (Bus input + bus 1) and put it into ACC and put bus 
+  alu(0,1); // set ALU compute new IAR (Bus input + bus 1) and put it into ACC and put bus 
   computer.memory.mar = computer.bus;
 }
 
@@ -71,14 +75,13 @@ void store(byte operand1,byte operand2){
   computer.memory.mar = computer.bus; //set
   //step 5 
   computer.bus = computer.cpu.regs[operand2]; //enable
-  computer.memory.ram[computer.memory.mar] = computer.bus; //set
+  computer.memory.ram[computer.memory.mar] = computer.bus; //enable
 }
 
 void data(byte operand1){
   //step 4
-  computer.cpu.bus1 = 1; // enable: put bus1 to 1 and put IAR on the bus
   computer.bus = computer.cpu.iar; //enable
-  alu(0); //increment iar
+  alu(0,1); //increment iar
   computer.memory.mar = computer.bus; //set
 
   //step5
