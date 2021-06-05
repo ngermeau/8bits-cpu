@@ -211,11 +211,11 @@ void execute_instruction(){
     }
   }
 
-  printf("address %i\n", computer.cpu.iar - 1 );
   printf("instruction %i\n", computer.cpu.ir);
   printf("r0 %i\n",  computer.cpu.regs[0]);
   printf("r1 %i\n",  computer.cpu.regs[1]);
   printf("r2 %i\n",  computer.cpu.regs[2]);
+  printf("r3 %i\n",  computer.cpu.regs[3]);
   printf("operation %i\n", operation); 
   printf("opcode %i\n", operation & 7); 
   printf("next iar %i\n", computer.cpu.iar);
@@ -223,9 +223,8 @@ void execute_instruction(){
   
 }
 
-// the 6 steps taken as a whole is called a instruction cycle 
-// first 3 steps are fetch 
-// 4,5,6 is decode and execute 
+// the 6 steps taken as a whole is called a instruction cycle
+// 3 for fetch and 3 for execution
 void do_step(){
     if (currentStep == 1){
       execute_step1();
@@ -246,10 +245,10 @@ void do_step(){
     currentStep+=1;
 }
 
-void cycle(){
+void start(){
+  // A 1000 cycle
   for (int i = 0; i < 1000; i++){
-    // each step is one cycle 
-    do_step();
+    do_step(); // each step is one cycle 
   }
 }
 
@@ -259,7 +258,6 @@ void load_file(char * filename){
   long filelen;
 
   fileptr = fopen(filename, "rb");  
-  printf("file: %p", fileptr); 
   fseek(fileptr, 0, SEEK_END);       
   filelen = ftell(fileptr);         
   rewind(fileptr);                 
@@ -275,11 +273,6 @@ void print_ram(){
 }
 
 int main(){
-  print_ram();
-  load_file("counter.bin");
-  printf("after\n");
-  print_ram();
-  cycle();
-  printf("value of r0\n");
-  computer.cpu.regs[0];
+  load_file("programs/counter.bin"); 
+  start();
 }
