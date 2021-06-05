@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#define MAX_BYTE_VALUE 255
+
 typedef __uint8_t byte;
 
 struct Memory  
@@ -10,11 +12,17 @@ struct Memory
     byte ram[256];
 };
 
+struct ALU {
+  bool c;
+  bool a;
+  bool e;
+  bool z;
+};
+
 struct CPU {
   byte regs[4];
   byte iar;
   byte ir;
-  byte bus1;
   byte tmp;
   byte acc;
 };
@@ -22,6 +30,7 @@ struct CPU {
 struct Computer {
   struct Memory memory;
   struct CPU cpu;
+  struct ALU alu;
   byte bus;
 };
 
@@ -34,10 +43,39 @@ struct Computer computer;
 void alu(byte opcode, byte bus1){
   byte op1 = computer.bus;
   byte op2 = bus1 ? bus1 : computer.cpu.tmp;
-
-  if (opcode == 0){   
-    computer.cpu.acc = op1 + op2;
-    // carry flag and such ? 
+  switch (opcode){   
+    case 0:  //add
+      printf("op1 : %i\n",op1);
+      printf("op2 : %i\n",op2);
+      computer.cpu.acc = op1 + op2;
+      computer.alu.c = ((op1 + op2) > MAX_BYTE_VALUE) ? true : false; 
+      // extra bit  
+    break;
+    case 1:  //shl
+      computer.cpu.acc = (op1 << 1);
+      //computer.alu.c = ((op1 << 1 ) > MAX_BYTE_VALUE);
+      // extra bit  
+    break;
+    case 2:  //shr
+      computer.cpu.acc = (op1 >> 1);
+      // extra bit  
+    break;
+    case 3:  //not
+      computer.cpu.acc = ~op1;
+    break;
+    case 4:  //and
+      computer.cpu.acc = op1 & op2;
+    break;
+    case 5:  //or
+      computer.cpu.acc = op1 | op2;
+    break;
+    case 6:  //xor
+      computer.cpu.acc = op1 ^ op2;
+    break;
+    case 7:  //cmp
+      computer.alu.a = (op1 > op2);
+      computer.alu.e = (op1 == op2);
+    break;
   }
 }
 
@@ -105,12 +143,21 @@ void execute_instruction(){
     store(operand1,operand2);
   }else if (operation == 2){
     data(operand2);
+  }else if (operation > 7){
+    computer.bus = computer.cpu.regs[operand1];
+    computer.cpu.tmp = computer.cpu.regs[operand2];
+    byte opcode = operation & 7; 
+    alu(opcode,0);
+    computer.bus = computer.cpu.acc;
+    computer.cpu.regs[operand2] = computer.bus; //set: put result into operand2
   }
   printf("instruction %i\n", computer.cpu.iar - 1 );
   printf("r0 %i\n",  computer.cpu.regs[0]);
   printf("r1 %i\n",  computer.cpu.regs[1]);
-  printf("execution op %i\n", operation); 
+  printf("operation %i\n", operation); 
+  printf("opcode %i\n", operation & 7); 
   printf("next iar %i\n", computer.cpu.iar);
+  printf("acc %i\n", computer.cpu.acc );
   
 }
 
@@ -161,20 +208,27 @@ void cycle(){
 // store R0,R3 = 19 
 //
 // data R0,    = 32
-// data R0,    = 33
-// data R0,    = 34
-// data R0,    = 35
+// data R1,    = 33
+// data R2,    = 34
+// data R3,    = 35
 
+// add R0,R1   = 129
+// shr R0,R3   = 163 
 
 int main(){
   computer.memory.ram[0] = 32;
-  computer.memory.ram[1] = 254; //data 254 to R0
-  computer.memory.ram[2] = 1; //load data at R0 address into R1;
-  computer.memory.ram[3] = 20;  //store R1, R0 
+  computer.memory.ram[1] = 32; //value 253 to R0
+  computer.memory.ram[2] = 33;
+  computer.memory.ram[3] = 10; //value 254 to R1
+  computer.memory.ram[4] = 163;
+
+  //computer.memory.ram[2] = 1; //load data at R0 address into R1;
+  //computer.memory.ram[3] = 20;  //store R1, R0 
   //data
-  computer.memory.ram[254] = 32; 
+  //computer.memory.ram[253] = 8; 
+  //computer.memory.ram[254] = 32; 
   cycle();
-  printf("ram at 32 %i\n", computer.memory.ram[32]);
+  //printf("ram at 32 %i\n", computer.memory.ram[32]);
 }
 
 
