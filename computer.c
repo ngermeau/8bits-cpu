@@ -39,15 +39,11 @@ struct Computer computer;
 
 int currentStep = 1; 
 
-
-//remove bus1 as state and pass it along  
 void alu(byte opcode, byte bus1){
   byte op1 = computer.bus;
   byte op2 = bus1 ? bus1 : computer.cpu.tmp;
   switch (opcode){   
     case 0:  //add
-      printf("op1 : %i\n",op1);
-      printf("op2 : %i\n",op2);
       computer.cpu.acc = op1 + op2;
       computer.alu.c = ((op1 + op2) > MAX_BYTE_VALUE) ? true : false; 
       computer.alu.z = (computer.cpu.acc == 0);
@@ -101,7 +97,6 @@ void execute_step3(){
   computer.cpu.iar = computer.bus; //set: put bus into iar
 }
 
-// from ram to register, first operand contains the address
 void load(byte operand1,byte operand2){
   //step 4
   computer.bus = computer.cpu.regs[operand1]; //enable
@@ -111,7 +106,6 @@ void load(byte operand1,byte operand2){
   computer.cpu.regs[operand2] = computer.bus; //set
 }
 
-// from register to ram, first operand contains the address
 void store(byte operand1,byte operand2){
   //step 4 
   printf("operand %i",computer.cpu.regs[operand1]);
@@ -190,7 +184,6 @@ void execute_instruction(){
   byte operand1 = (operands & 12) >> 2;
   byte operand2 = (operands & 3);
 
-  printf("\n\n");
   if (operation == 0){
     load(operand1,operand2);
   }else if (operation == 1){
@@ -260,33 +253,6 @@ void cycle(){
   }
 }
 
-// from ram to register, first operand contains the address
-// load R0,R0 = 0
-// load R0,R1 = 1 
-// load R0,R2 = 2 
-// load R0,R3 = 3 
-//
-// from register to ram, first operand contains the address
-// store R0,R0 = 16 
-// store R0,R1 = 17 
-// store R0,R2 = 18 
-// store R0,R3 = 19 
-//
-// data R0,    = 32
-// data R1,    = 33
-// data R2,    = 34
-// data R3,    = 35
-
-// add R0,R1   = 129
-// shr R0,R3   = 163 
-
-long int fileSize(FILE * fp)
-{
-    fseek(fp, 0L, SEEK_END);
-    long int res = ftell(fp);
-    return res;
-}
-
 void load_file(char * filename){
   FILE *fileptr;
   char *buffer;
@@ -309,12 +275,6 @@ void print_ram(){
 }
 
 int main(){
-  /* computer.memory.ram[0] = 32; */
-  /* computer.memory.ram[1] = 32; //value 32 to R0 */
-  /* computer.memory.ram[2] = 33; */
-  /* computer.memory.ram[3] = 10; //value 10 to R1 */
-  /* computer.memory.ram[4] = 163; */
-  
   print_ram();
   load_file("counter.bin");
   printf("after\n");
@@ -323,33 +283,3 @@ int main(){
   printf("value of r0\n");
   computer.cpu.regs[0];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* computer ram at 0 = 32 */ 
-/* computer ram at 1 = 1   r0 doit contenir 1 ok */
-/* computer ram at 2 = 33 */
-/* computer ram at 3 = 1   r1 doit contenir 1 ok */   
-/* computer ram at 4 = 34 */
-/* computer ram at 5 = 100 r2 doit contenir 100 ok */
-/* computer ram at 6 = 129 add */ 
-/* computer ram at 7 = 96 clf */
-/* computer ram at 8 = 249 cmp */
-/* computer ram at 9 = 84 ja */
-/* computer ram at 10 = 0 */

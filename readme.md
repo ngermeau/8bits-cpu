@@ -1,20 +1,19 @@
+# Minimalistic CPU simulator 
+
+
 # Todo
-
-
-Planning
-----
-- pouvoir executer un programme qui fait une somme simple 
-- pouvoir parler avec un clavier et un ecran 
-
-//1 read bin file 
-//2 create new computer 
-//3 load program into memory
-//5 run computer 
-  //5.1 put addressRegister to beginning of memory 
-  //tick cpu (one tick up and one tick down)
+[ ] cleanup du code 
+[ ] faire en sorte qu'on puisse passer un programme en parametre 
+[ ] faire en sorte que le nombre de cycle tourne tant que le programme n'est pas terminé 
+[ ] prend les carry flag en compte dans l'op add, shl, shr
+[ ] rendering graphique de la mémoire, regs etc...
+[ ] faire en sorte que un cycle = set et enable partout
+[ ] ecrire un readme un peu correcte 
+[ ] crée son propre assembleur 
 
 
 
-question
---
-- we need to take the carry flag into account for add, shl, shr (not done yet) 
+# Demo programs
+
+- add: add two value 
+- counter: increment r1 until value of r2 and then stop
