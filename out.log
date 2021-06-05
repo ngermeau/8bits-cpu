@@ -1,0 +1,2642 @@
+computer ram at 0 = 0
+computer ram at 1 = 0
+computer ram at 2 = 0
+computer ram at 3 = 0
+computer ram at 4 = 0
+computer ram at 5 = 0
+computer ram at 6 = 0
+computer ram at 7 = 0
+computer ram at 8 = 0
+computer ram at 9 = 0
+computer ram at 10 = 0
+file: 0x55aa5beab270after
+computer ram at 0 = 32
+computer ram at 1 = 1
+computer ram at 2 = 33
+computer ram at 3 = 1
+computer ram at 4 = 34
+computer ram at 5 = 4
+computer ram at 6 = 129
+computer ram at 7 = 96
+computer ram at 8 = 249
+computer ram at 9 = 84
+computer ram at 10 = 6
+op1 : 0
+op2 : 1
+
+
+op1 : 1
+op2 : 1
+address 1
+instruction 32
+r0 1
+r1 0
+r2 0
+operation 2
+opcode 2
+next iar 2
+acc 2
+op1 : 2
+op2 : 1
+
+
+op1 : 3
+op2 : 1
+address 3
+instruction 33
+r0 1
+r1 1
+r2 0
+operation 2
+opcode 2
+next iar 4
+acc 4
+op1 : 4
+op2 : 1
+
+
+op1 : 5
+op2 : 1
+address 5
+instruction 34
+r0 1
+r1 1
+r2 4
+operation 2
+opcode 2
+next iar 6
+acc 6
+op1 : 6
+op2 : 1
+
+
+op1 : 1
+op2 : 1
+address 6
+instruction 129
+r0 1
+r1 2
+r2 4
+operation 8
+opcode 0
+next iar 7
+acc 2
+op1 : 7
+op2 : 1
+
+
+address 7
+instruction 96
+r0 1
+r1 2
+r2 4
+operation 6
+opcode 6
+next iar 8
+acc 8
+op1 : 8
+op2 : 1
+
+
+address 8
+instruction 249
+r0 1
+r1 2
+r2 4
+operation 15
+opcode 7
+next iar 9
+acc 9
+op1 : 9
+op2 : 1
+
+
+op1 : 10
+op2 : 1
+address 5
+instruction 84
+r0 1
+r1 2
+r2 4
+operation 5
+opcode 5
+next iar 6
+acc 11
+op1 : 6
+op2 : 1
+
+
+op1 : 1
+op2 : 2
+address 6
+instruction 129
+r0 1
+r1 3
+r2 4
+operation 8
+opcode 0
+next iar 7
+acc 3
+op1 : 7
+op2 : 1
+
+
+address 7
+instruction 96
+r0 1
+r1 3
+r2 4
+operation 6
+opcode 6
+next iar 8
+acc 8
+op1 : 8
+op2 : 1
+
+
+address 8
+instruction 249
+r0 1
+r1 3
+r2 4
+operation 15
+opcode 7
+next iar 9
+acc 9
+op1 : 9
+op2 : 1
+
+
+op1 : 10
+op2 : 1
+address 5
+instruction 84
+r0 1
+r1 3
+r2 4
+operation 5
+opcode 5
+next iar 6
+acc 11
+op1 : 6
+op2 : 1
+
+
+op1 : 1
+op2 : 3
+address 6
+instruction 129
+r0 1
+r1 4
+r2 4
+operation 8
+opcode 0
+next iar 7
+acc 4
+op1 : 7
+op2 : 1
+
+
+address 7
+instruction 96
+r0 1
+r1 4
+r2 4
+operation 6
+opcode 6
+next iar 8
+acc 8
+op1 : 8
+op2 : 1
+
+
+address 8
+instruction 249
+r0 1
+r1 4
+r2 4
+operation 15
+opcode 7
+next iar 9
+acc 9
+op1 : 9
+op2 : 1
+
+
+op1 : 10
+op2 : 1
+address 10
+instruction 84
+r0 1
+r1 4
+r2 4
+operation 5
+opcode 5
+next iar 11
+acc 11
+op1 : 11
+op2 : 1
+
+
+address 11
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 12
+acc 12
+op1 : 12
+op2 : 1
+
+
+address 12
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 13
+acc 13
+op1 : 13
+op2 : 1
+
+
+address 13
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 14
+acc 14
+op1 : 14
+op2 : 1
+
+
+address 14
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 15
+acc 15
+op1 : 15
+op2 : 1
+
+
+address 15
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 16
+acc 16
+op1 : 16
+op2 : 1
+
+
+address 16
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 17
+acc 17
+op1 : 17
+op2 : 1
+
+
+address 17
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 18
+acc 18
+op1 : 18
+op2 : 1
+
+
+address 18
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 19
+acc 19
+op1 : 19
+op2 : 1
+
+
+address 19
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 20
+acc 20
+op1 : 20
+op2 : 1
+
+
+address 20
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 21
+acc 21
+op1 : 21
+op2 : 1
+
+
+address 21
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 22
+acc 22
+op1 : 22
+op2 : 1
+
+
+address 22
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 23
+acc 23
+op1 : 23
+op2 : 1
+
+
+address 23
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 24
+acc 24
+op1 : 24
+op2 : 1
+
+
+address 24
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 25
+acc 25
+op1 : 25
+op2 : 1
+
+
+address 25
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 26
+acc 26
+op1 : 26
+op2 : 1
+
+
+address 26
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 27
+acc 27
+op1 : 27
+op2 : 1
+
+
+address 27
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 28
+acc 28
+op1 : 28
+op2 : 1
+
+
+address 28
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 29
+acc 29
+op1 : 29
+op2 : 1
+
+
+address 29
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 30
+acc 30
+op1 : 30
+op2 : 1
+
+
+address 30
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 31
+acc 31
+op1 : 31
+op2 : 1
+
+
+address 31
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 32
+acc 32
+op1 : 32
+op2 : 1
+
+
+address 32
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 33
+acc 33
+op1 : 33
+op2 : 1
+
+
+address 33
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 34
+acc 34
+op1 : 34
+op2 : 1
+
+
+address 34
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 35
+acc 35
+op1 : 35
+op2 : 1
+
+
+address 35
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 36
+acc 36
+op1 : 36
+op2 : 1
+
+
+address 36
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 37
+acc 37
+op1 : 37
+op2 : 1
+
+
+address 37
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 38
+acc 38
+op1 : 38
+op2 : 1
+
+
+address 38
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 39
+acc 39
+op1 : 39
+op2 : 1
+
+
+address 39
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 40
+acc 40
+op1 : 40
+op2 : 1
+
+
+address 40
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 41
+acc 41
+op1 : 41
+op2 : 1
+
+
+address 41
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 42
+acc 42
+op1 : 42
+op2 : 1
+
+
+address 42
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 43
+acc 43
+op1 : 43
+op2 : 1
+
+
+address 43
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 44
+acc 44
+op1 : 44
+op2 : 1
+
+
+address 44
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 45
+acc 45
+op1 : 45
+op2 : 1
+
+
+address 45
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 46
+acc 46
+op1 : 46
+op2 : 1
+
+
+address 46
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 47
+acc 47
+op1 : 47
+op2 : 1
+
+
+address 47
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 48
+acc 48
+op1 : 48
+op2 : 1
+
+
+address 48
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 49
+acc 49
+op1 : 49
+op2 : 1
+
+
+address 49
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 50
+acc 50
+op1 : 50
+op2 : 1
+
+
+address 50
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 51
+acc 51
+op1 : 51
+op2 : 1
+
+
+address 51
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 52
+acc 52
+op1 : 52
+op2 : 1
+
+
+address 52
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 53
+acc 53
+op1 : 53
+op2 : 1
+
+
+address 53
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 54
+acc 54
+op1 : 54
+op2 : 1
+
+
+address 54
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 55
+acc 55
+op1 : 55
+op2 : 1
+
+
+address 55
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 56
+acc 56
+op1 : 56
+op2 : 1
+
+
+address 56
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 57
+acc 57
+op1 : 57
+op2 : 1
+
+
+address 57
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 58
+acc 58
+op1 : 58
+op2 : 1
+
+
+address 58
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 59
+acc 59
+op1 : 59
+op2 : 1
+
+
+address 59
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 60
+acc 60
+op1 : 60
+op2 : 1
+
+
+address 60
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 61
+acc 61
+op1 : 61
+op2 : 1
+
+
+address 61
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 62
+acc 62
+op1 : 62
+op2 : 1
+
+
+address 62
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 63
+acc 63
+op1 : 63
+op2 : 1
+
+
+address 63
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 64
+acc 64
+op1 : 64
+op2 : 1
+
+
+address 64
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 65
+acc 65
+op1 : 65
+op2 : 1
+
+
+address 65
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 66
+acc 66
+op1 : 66
+op2 : 1
+
+
+address 66
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 67
+acc 67
+op1 : 67
+op2 : 1
+
+
+address 67
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 68
+acc 68
+op1 : 68
+op2 : 1
+
+
+address 68
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 69
+acc 69
+op1 : 69
+op2 : 1
+
+
+address 69
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 70
+acc 70
+op1 : 70
+op2 : 1
+
+
+address 70
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 71
+acc 71
+op1 : 71
+op2 : 1
+
+
+address 71
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 72
+acc 72
+op1 : 72
+op2 : 1
+
+
+address 72
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 73
+acc 73
+op1 : 73
+op2 : 1
+
+
+address 73
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 74
+acc 74
+op1 : 74
+op2 : 1
+
+
+address 74
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 75
+acc 75
+op1 : 75
+op2 : 1
+
+
+address 75
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 76
+acc 76
+op1 : 76
+op2 : 1
+
+
+address 76
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 77
+acc 77
+op1 : 77
+op2 : 1
+
+
+address 77
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 78
+acc 78
+op1 : 78
+op2 : 1
+
+
+address 78
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 79
+acc 79
+op1 : 79
+op2 : 1
+
+
+address 79
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 80
+acc 80
+op1 : 80
+op2 : 1
+
+
+address 80
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 81
+acc 81
+op1 : 81
+op2 : 1
+
+
+address 81
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 82
+acc 82
+op1 : 82
+op2 : 1
+
+
+address 82
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 83
+acc 83
+op1 : 83
+op2 : 1
+
+
+address 83
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 84
+acc 84
+op1 : 84
+op2 : 1
+
+
+address 84
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 85
+acc 85
+op1 : 85
+op2 : 1
+
+
+address 85
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 86
+acc 86
+op1 : 86
+op2 : 1
+
+
+address 86
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 87
+acc 87
+op1 : 87
+op2 : 1
+
+
+address 87
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 88
+acc 88
+op1 : 88
+op2 : 1
+
+
+address 88
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 89
+acc 89
+op1 : 89
+op2 : 1
+
+
+address 89
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 90
+acc 90
+op1 : 90
+op2 : 1
+
+
+address 90
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 91
+acc 91
+op1 : 91
+op2 : 1
+
+
+address 91
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 92
+acc 92
+op1 : 92
+op2 : 1
+
+
+address 92
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 93
+acc 93
+op1 : 93
+op2 : 1
+
+
+address 93
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 94
+acc 94
+op1 : 94
+op2 : 1
+
+
+address 94
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 95
+acc 95
+op1 : 95
+op2 : 1
+
+
+address 95
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 96
+acc 96
+op1 : 96
+op2 : 1
+
+
+address 96
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 97
+acc 97
+op1 : 97
+op2 : 1
+
+
+address 97
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 98
+acc 98
+op1 : 98
+op2 : 1
+
+
+address 98
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 99
+acc 99
+op1 : 99
+op2 : 1
+
+
+address 99
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 100
+acc 100
+op1 : 100
+op2 : 1
+
+
+address 100
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 101
+acc 101
+op1 : 101
+op2 : 1
+
+
+address 101
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 102
+acc 102
+op1 : 102
+op2 : 1
+
+
+address 102
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 103
+acc 103
+op1 : 103
+op2 : 1
+
+
+address 103
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 104
+acc 104
+op1 : 104
+op2 : 1
+
+
+address 104
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 105
+acc 105
+op1 : 105
+op2 : 1
+
+
+address 105
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 106
+acc 106
+op1 : 106
+op2 : 1
+
+
+address 106
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 107
+acc 107
+op1 : 107
+op2 : 1
+
+
+address 107
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 108
+acc 108
+op1 : 108
+op2 : 1
+
+
+address 108
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 109
+acc 109
+op1 : 109
+op2 : 1
+
+
+address 109
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 110
+acc 110
+op1 : 110
+op2 : 1
+
+
+address 110
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 111
+acc 111
+op1 : 111
+op2 : 1
+
+
+address 111
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 112
+acc 112
+op1 : 112
+op2 : 1
+
+
+address 112
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 113
+acc 113
+op1 : 113
+op2 : 1
+
+
+address 113
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 114
+acc 114
+op1 : 114
+op2 : 1
+
+
+address 114
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 115
+acc 115
+op1 : 115
+op2 : 1
+
+
+address 115
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 116
+acc 116
+op1 : 116
+op2 : 1
+
+
+address 116
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 117
+acc 117
+op1 : 117
+op2 : 1
+
+
+address 117
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 118
+acc 118
+op1 : 118
+op2 : 1
+
+
+address 118
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 119
+acc 119
+op1 : 119
+op2 : 1
+
+
+address 119
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 120
+acc 120
+op1 : 120
+op2 : 1
+
+
+address 120
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 121
+acc 121
+op1 : 121
+op2 : 1
+
+
+address 121
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 122
+acc 122
+op1 : 122
+op2 : 1
+
+
+address 122
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 123
+acc 123
+op1 : 123
+op2 : 1
+
+
+address 123
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 124
+acc 124
+op1 : 124
+op2 : 1
+
+
+address 124
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 125
+acc 125
+op1 : 125
+op2 : 1
+
+
+address 125
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 126
+acc 126
+op1 : 126
+op2 : 1
+
+
+address 126
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 127
+acc 127
+op1 : 127
+op2 : 1
+
+
+address 127
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 128
+acc 128
+op1 : 128
+op2 : 1
+
+
+address 128
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 129
+acc 129
+op1 : 129
+op2 : 1
+
+
+address 129
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 130
+acc 130
+op1 : 130
+op2 : 1
+
+
+address 130
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 131
+acc 131
+op1 : 131
+op2 : 1
+
+
+address 131
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 132
+acc 132
+op1 : 132
+op2 : 1
+
+
+address 132
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 133
+acc 133
+op1 : 133
+op2 : 1
+
+
+address 133
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 134
+acc 134
+op1 : 134
+op2 : 1
+
+
+address 134
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 135
+acc 135
+op1 : 135
+op2 : 1
+
+
+address 135
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 136
+acc 136
+op1 : 136
+op2 : 1
+
+
+address 136
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 137
+acc 137
+op1 : 137
+op2 : 1
+
+
+address 137
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 138
+acc 138
+op1 : 138
+op2 : 1
+
+
+address 138
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 139
+acc 139
+op1 : 139
+op2 : 1
+
+
+address 139
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 140
+acc 140
+op1 : 140
+op2 : 1
+
+
+address 140
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 141
+acc 141
+op1 : 141
+op2 : 1
+
+
+address 141
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 142
+acc 142
+op1 : 142
+op2 : 1
+
+
+address 142
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 143
+acc 143
+op1 : 143
+op2 : 1
+
+
+address 143
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 144
+acc 144
+op1 : 144
+op2 : 1
+
+
+address 144
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 145
+acc 145
+op1 : 145
+op2 : 1
+
+
+address 145
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 146
+acc 146
+op1 : 146
+op2 : 1
+
+
+address 146
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 147
+acc 147
+op1 : 147
+op2 : 1
+
+
+address 147
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 148
+acc 148
+op1 : 148
+op2 : 1
+
+
+address 148
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 149
+acc 149
+op1 : 149
+op2 : 1
+
+
+address 149
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 150
+acc 150
+op1 : 150
+op2 : 1
+
+
+address 150
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 151
+acc 151
+op1 : 151
+op2 : 1
+
+
+address 151
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 152
+acc 152
+op1 : 152
+op2 : 1
+
+
+address 152
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 153
+acc 153
+op1 : 153
+op2 : 1
+
+
+address 153
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 154
+acc 154
+op1 : 154
+op2 : 1
+
+
+address 154
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 155
+acc 155
+op1 : 155
+op2 : 1
+
+
+address 155
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 156
+acc 156
+op1 : 156
+op2 : 1
+
+
+address 156
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 157
+acc 157
+op1 : 157
+op2 : 1
+
+
+address 157
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 158
+acc 158
+op1 : 158
+op2 : 1
+
+
+address 158
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 159
+acc 159
+op1 : 159
+op2 : 1
+
+
+address 159
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 160
+acc 160
+op1 : 160
+op2 : 1
+
+
+address 160
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 161
+acc 161
+op1 : 161
+op2 : 1
+
+
+address 161
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 162
+acc 162
+op1 : 162
+op2 : 1
+
+
+address 162
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 163
+acc 163
+op1 : 163
+op2 : 1
+
+
+address 163
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 164
+acc 164
+op1 : 164
+op2 : 1
+
+
+address 164
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 165
+acc 165
+op1 : 165
+op2 : 1
+
+
+address 165
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 166
+acc 166
+op1 : 166
+op2 : 1
+
+
+address 166
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 167
+acc 167
+op1 : 167
+op2 : 1
+
+
+address 167
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 168
+acc 168
+op1 : 168
+op2 : 1
+
+
+address 168
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 169
+acc 169
+op1 : 169
+op2 : 1
+
+
+address 169
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 170
+acc 170
+op1 : 170
+op2 : 1
+
+
+address 170
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 171
+acc 171
+op1 : 171
+op2 : 1
+
+
+address 171
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 172
+acc 172
+op1 : 172
+op2 : 1
+
+
+address 172
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 173
+acc 173
+op1 : 173
+op2 : 1
+
+
+address 173
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 174
+acc 174
+op1 : 174
+op2 : 1
+
+
+address 174
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 175
+acc 175
+op1 : 175
+op2 : 1
+
+
+address 175
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 176
+acc 176
+op1 : 176
+op2 : 1
+
+
+address 176
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 177
+acc 177
+op1 : 177
+op2 : 1
+
+
+address 177
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 178
+acc 178
+op1 : 178
+op2 : 1
+
+
+address 178
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 179
+acc 179
+op1 : 179
+op2 : 1
+
+
+address 179
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 180
+acc 180
+op1 : 180
+op2 : 1
+
+
+address 180
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 181
+acc 181
+op1 : 181
+op2 : 1
+
+
+address 181
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 182
+acc 182
+op1 : 182
+op2 : 1
+
+
+address 182
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 183
+acc 183
+op1 : 183
+op2 : 1
+
+
+address 183
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 184
+acc 184
+op1 : 184
+op2 : 1
+
+
+address 184
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 185
+acc 185
+op1 : 185
+op2 : 1
+
+
+address 185
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 186
+acc 186
+op1 : 186
+op2 : 1
+
+
+address 186
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 187
+acc 187
+op1 : 187
+op2 : 1
+
+
+address 187
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 188
+acc 188
+op1 : 188
+op2 : 1
+
+
+address 188
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 189
+acc 189
+op1 : 189
+op2 : 1
+
+
+address 189
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 190
+acc 190
+op1 : 190
+op2 : 1
+
+
+address 190
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 191
+acc 191
+op1 : 191
+op2 : 1
+
+
+address 191
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 192
+acc 192
+op1 : 192
+op2 : 1
+
+
+address 192
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 193
+acc 193
+op1 : 193
+op2 : 1
+
+
+address 193
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 194
+acc 194
+op1 : 194
+op2 : 1
+
+
+address 194
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 195
+acc 195
+op1 : 195
+op2 : 1
+
+
+address 195
+instruction 0
+r0 1
+r1 4
+r2 4
+operation 0
+opcode 0
+next iar 196
+acc 196
+value of r0

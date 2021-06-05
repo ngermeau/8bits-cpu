@@ -17,4 +17,4 @@ Planning
 
 question
 --
-i don't think i've nailed the added 
+- we need to take the carry flag into account for add, shl, shr (not done yet) 
