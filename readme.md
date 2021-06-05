@@ -2,15 +2,15 @@
 
 
 # Todo
-[ ] cleanup du code 
-[ ] faire en sorte qu'on puisse passer un programme en parametre 
-[ ] faire en sorte que le nombre de cycle tourne tant que le programme n'est pas terminé 
-[ ] prend les carry flag en compte dans l'op add, shl, shr
-[ ] rendering graphique de la mémoire, regs etc...
-[ ] faire en sorte que un cycle = set et enable partout
-[ ] ecrire un readme un peu correcte 
-[ ] crée son propre assembleur 
 
+[ ] code cleanup  
+[ ] let a program be passed in parameter   
+[ ] computer (cycles) stop after program finish executing   
+[ ] take carry flag as input for add, shr, shl    
+[ ] display graphical rendering of memory, regs...   
+[ ] differentiate set and enable in steps    
+[ ] write a correct readme     
+[ ] write your own assembly compiler   
 
 
 # Demo programs
