@@ -1,4 +1,4 @@
-# Minimalistic and Naive CPU Simulator 
+# Minimalistic and Naive 8 Bit CPU Simulator 
 
 
 # Todo
