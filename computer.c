@@ -272,7 +272,8 @@ void print_ram(){
   }
 }
 
-int main(){
-  load_file("programs/counter.bin"); 
+int main(int argc, char *argv[]){
+  load_file(argv[1]); 
+  print_ram();
   start();
 }

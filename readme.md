@@ -4,12 +4,13 @@
 # Todo
 
 [ ] code cleanup  
-[ ] let a program be passed in parameter   
+[x] let a program be passed in parameter   
 [ ] take carry flag as input for add, shr, shl    
+[ ] shr, shl are not correct they use two operands 
 [ ] does other operations than CMP also affect the flags c,a,e,z ?  
-[ ] put declaration in h files     
+[ ] 2dimenson memory
 [ ] using enum for flag instead of boolean variables    
-[ ] execute instruction take steps 4,5,6 is not really correct regarding the cycles      
+[ ] put declaration in h files     
 [ ] exception for not moving acc to register in case of CMP not very clean   
 [ ] computer (cycles) stop after program finish executing   
 [ ] display graphical rendering of memory, regs... (use ncurse lib) 
