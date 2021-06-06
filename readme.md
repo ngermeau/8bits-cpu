@@ -12,7 +12,7 @@
 [ ] execute instruction take steps 4,5,6 is not really correct regarding the cycles      
 [ ] exception for not moving acc to register in case of CMP not very clean   
 [ ] computer (cycles) stop after program finish executing   
-[ ] display graphical rendering of memory, regs...   
+[ ] display graphical rendering of memory, regs... (use ncurse lib) 
 [ ] write a correct readme (supported instructions etc...)    
 [ ] write your own assembly compiler   
 [ ] take care of peripherals     
