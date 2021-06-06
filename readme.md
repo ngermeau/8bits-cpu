@@ -9,7 +9,7 @@
 [ ] does other operations than CMP also affect the flags c,a,e,z ?  
 [ ] put declaration in h files 
 [ ] using enum for flag instead of boolean variables 
-[ ] the fact that execute instruction take steps 4,5,6 is not really correct regarding the cycles    
+[ ] execute instruction take steps 4,5,6 is not really correct regarding the cycles      
 [ ] exception for not moving acc to register in case of CMP not very clean   
 [ ] computer (cycles) stop after program finish executing   
 [ ] display graphical rendering of memory, regs...   
