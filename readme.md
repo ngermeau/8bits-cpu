@@ -6,9 +6,9 @@
 [x] let a program be passed in parameter   
 [x] take carry flag as input for add, shr, shl    
 [x] shr, shl are not correct they use two operands 
-[ ] does other operations than CMP also affect the flags c,a,e,z ?  
-[ ] 2dimenson memory
+[x] does other operations than CMP also affect the flags c,a,e,z ?  nope, check the dia
 [ ] using enum for flag instead of boolean variables    
+[ ] use hexadecimal instead of decimal
 [ ] put declaration in h files     
 [ ] exception for not moving acc to register in case of CMP not very clean   
 [ ] computer (cycles) stop after program finish executing   

@@ -7,17 +7,15 @@
 
 typedef __uint8_t byte;
 
-struct Memory  
-{
+enum flags {c,a,e,z};
+
+struct Memory  {
     byte mar;
     byte ram[256];
 };
 
 struct ALU {
-  bool c;
-  bool a;
-  bool e;
-  bool z;
+  bool flags[4]; 
 };
 
 struct CPU {
@@ -42,20 +40,20 @@ int currentStep = 1;
 void alu(byte opcode, byte bus1){
   byte op1 = computer.bus;
   byte op2 = bus1 ? bus1 : computer.cpu.tmp;
-  byte cf = computer.alu.c ? 1 : 0;
+  byte cf = computer.alu.flags[c] ? 1 : 0;
 
   switch (opcode){   
     case 0:  //add
       computer.cpu.acc = op1 + op2 + cf;
-      computer.alu.c = ((op1 + op2 + cf) > MAX_BYTE_VALUE) ? true : false; 
+      computer.alu.flags[c] = ((op1 + op2 + cf) > MAX_BYTE_VALUE) ? true : false; 
     break;
     case 1:  //shl
-      computer.cpu.acc = (op1 << 1) | (byte) (computer.alu.c ? 1 : 0);
-      computer.alu.c = (op1 & 128) ? true : false; 
+      computer.cpu.acc = (op1 << 1) | (byte) (computer.alu.flags[c] ? 1 : 0);
+      computer.alu.flags[c] = (op1 & 128) ? true : false; 
     break;
     case 2:  //shr
-      computer.cpu.acc = (op1 >> 1) | (byte) (computer.alu.c ? 128 : 0);
-      computer.alu.c = (op1 & 1) ? true : false; 
+      computer.cpu.acc = (op1 >> 1) | (byte) (computer.alu.flags[c] ? 128 : 0); 
+      computer.alu.flags[c] = (op1 & 1) ? true : false; 
     break;
     case 3:  //not
       computer.cpu.acc = ~op1;
@@ -70,11 +68,11 @@ void alu(byte opcode, byte bus1){
       computer.cpu.acc = op1 ^ op2;
     break;
     case 7:  //cmp
-      computer.alu.a = (op1 > op2);
-      computer.alu.e = (op1 == op2);
+      computer.alu.flags[a] = (op1 > op2);
+      computer.alu.flags[e] = (op1 == op2);
     break;
   }
-    computer.alu.z = (computer.cpu.acc == 0);
+    computer.alu.flags[z] = (computer.cpu.acc == 0);
 }
 
 void execute_step1(){
@@ -155,12 +153,12 @@ void jumpc(byte operands){
 
   //step6 
   byte res = 0;
-  if (computer.alu.z){ res+=1; }
-  if (computer.alu.e){ res+=2; }
-  if (computer.alu.a){ res+=4; }
-  if (computer.alu.c){ res+=8; }
-
-  if (res & operands){
+  res |=   computer.alu.flags[z] | 
+          (computer.alu.flags[e] ? 2 : 0) | 
+          (computer.alu.flags[a] ? 4 : 0) | 
+          (computer.alu.flags[c] ? 8 : 0);
+  
+  if (res & operands){ 
     computer.bus = computer.memory.ram[computer.memory.mar];
     computer.cpu.iar = computer.bus;
   }
@@ -168,10 +166,9 @@ void jumpc(byte operands){
 
 void clear(){
   //step 4
-  computer.alu.c = false;
-  computer.alu.a = false;
-  computer.alu.e = false;
-  computer.alu.z = false;
+  for (int i = 0; i < sizeof(computer.alu.flags); i++){
+    computer.alu.flags[i] = false;
+  }
 }
 
 void execute_instruction(){
