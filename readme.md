@@ -3,10 +3,9 @@
 
 # Todo
 
-[ ] code cleanup  
 [x] let a program be passed in parameter   
-[ ] take carry flag as input for add, shr, shl    
-[ ] shr, shl are not correct they use two operands 
+[x] take carry flag as input for add, shr, shl    
+[x] shr, shl are not correct they use two operands 
 [ ] does other operations than CMP also affect the flags c,a,e,z ?  
 [ ] 2dimenson memory
 [ ] using enum for flag instead of boolean variables    

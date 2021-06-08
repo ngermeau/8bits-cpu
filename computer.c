@@ -42,43 +42,39 @@ int currentStep = 1;
 void alu(byte opcode, byte bus1){
   byte op1 = computer.bus;
   byte op2 = bus1 ? bus1 : computer.cpu.tmp;
+  byte cf = computer.alu.c ? 1 : 0;
+
   switch (opcode){   
     case 0:  //add
-      computer.cpu.acc = op1 + op2;
-      computer.alu.c = ((op1 + op2) > MAX_BYTE_VALUE) ? true : false; 
-      computer.alu.z = (computer.cpu.acc == 0);
+      computer.cpu.acc = op1 + op2 + cf;
+      computer.alu.c = ((op1 + op2 + cf) > MAX_BYTE_VALUE) ? true : false; 
     break;
     case 1:  //shl
-      computer.cpu.acc = (op1 << 1);
+      computer.cpu.acc = (op1 << 1) | (byte) (computer.alu.c ? 1 : 0);
       computer.alu.c = (op1 & 128) ? true : false; 
-      computer.alu.z = (computer.cpu.acc == 0);
     break;
     case 2:  //shr
-      computer.cpu.acc = (op1 >> 1);
+      computer.cpu.acc = (op1 >> 1) | (byte) (computer.alu.c ? 128 : 0);
       computer.alu.c = (op1 & 1) ? true : false; 
-      computer.alu.z = (computer.cpu.acc == 0);
     break;
     case 3:  //not
       computer.cpu.acc = ~op1;
-      computer.alu.z = (computer.cpu.acc == 0);
     break;
     case 4:  //and
       computer.cpu.acc = op1 & op2;
-      computer.alu.z = (computer.cpu.acc == 0);
     break;
     case 5:  //or
       computer.cpu.acc = op1 | op2;
-      computer.alu.z = (computer.cpu.acc == 0);
     break;
     case 6:  //xor
       computer.cpu.acc = op1 ^ op2;
-      computer.alu.z = (computer.cpu.acc == 0);
     break;
     case 7:  //cmp
       computer.alu.a = (op1 > op2);
       computer.alu.e = (op1 == op2);
     break;
   }
+    computer.alu.z = (computer.cpu.acc == 0);
 }
 
 void execute_step1(){
@@ -276,4 +272,5 @@ int main(int argc, char *argv[]){
   load_file(argv[1]); 
   print_ram();
   start();
+  
 }
