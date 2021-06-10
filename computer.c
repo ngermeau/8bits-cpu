@@ -48,11 +48,11 @@ void alu(byte opcode, byte bus1){
       computer.alu.flags[c] = ((op1 + op2 + cf) > MAX_BYTE_VALUE) ? true : false; 
     break;
     case 1:  //shl
-      computer.cpu.acc = (op1 << 1) | (byte) (computer.alu.flags[c] ? 1 : 0);
+      computer.cpu.acc = (op1 << 1) | cf;
       computer.alu.flags[c] = (op1 & 128) ? true : false; 
     break;
     case 2:  //shr
-      computer.cpu.acc = (op1 >> 1) | (byte) (computer.alu.flags[c] ? 128 : 0); 
+      computer.cpu.acc = (op1 >> 1) | (cf ? 128 : 0); 
       computer.alu.flags[c] = (op1 & 1) ? true : false; 
     break;
     case 3:  //not
@@ -170,6 +170,7 @@ void clear(){
     computer.alu.flags[i] = false;
   }
 }
+ 
 
 void execute_instruction(){
   byte operation = computer.cpu.ir >> 4; 
