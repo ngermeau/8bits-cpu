@@ -3,8 +3,8 @@
 
 # Todo
 
+[ ] be able to execute cycle per cycle with info
 [ ] exception for not moving acc to register in case of CMP not very clean     
-[ ] computer (cycles) stop after program finish executing   
 [ ] display graphical rendering of memory, regs... (use ncurse lib) 
 [ ] write a correct readme (supported instructions etc...)    
 [ ] write your own assembly compiler   

@@ -7,16 +7,18 @@
 
 typedef __uint8_t byte;
 
+enum operation {load,store,data,jumpr,jump,jumpc,clear};
+enum opcode {add,shl,shr,not,and,or,xor,cmp};
 enum flags {c,a,e,z};
 
 struct Memory  {
     byte mar;
     byte ram[256];
-};
+} mem;
 
 struct ALU {
   bool flags[4]; 
-};
+} alu;
 
 struct CPU {
   byte regs[4];
@@ -24,225 +26,162 @@ struct CPU {
   byte ir;
   byte tmp;
   byte acc;
-};
+} cpu;
 
-struct Computer {
-  struct Memory memory;
-  struct CPU cpu;
-  struct ALU alu;
-  byte bus;
-};
+byte bus;
 
-struct Computer computer;
 
 int currentStep = 1; 
 
-void alu(byte opcode, byte bus1){
-  byte op1 = computer.bus;
-  byte op2 = bus1 ? bus1 : computer.cpu.tmp;
-  byte cf = computer.alu.flags[c] ? 1 : 0;
+void call_alu(byte opcode, byte bus1){
+  byte op1 = bus;
+  byte op2 = bus1 ? bus1 : cpu.tmp;
+  byte cf = alu.flags[c] ? 1 : 0;
 
-  switch (opcode){   
-    case 0:  //add
-      computer.cpu.acc = op1 + op2 + cf;
-      computer.alu.flags[c] = ((op1 + op2 + cf) > MAX_BYTE_VALUE) ? true : false; 
-    break;
-    case 1:  //shl
-      computer.cpu.acc = (op1 << 1) | cf;
-      computer.alu.flags[c] = (op1 & 128) ? true : false; 
-    break;
-    case 2:  //shr
-      computer.cpu.acc = (op1 >> 1) | (cf ? 128 : 0); 
-      computer.alu.flags[c] = (op1 & 1) ? true : false; 
-    break;
-    case 3:  //not
-      computer.cpu.acc = ~op1;
-    break;
-    case 4:  //and
-      computer.cpu.acc = op1 & op2;
-    break;
-    case 5:  //or
-      computer.cpu.acc = op1 | op2;
-    break;
-    case 6:  //xor
-      computer.cpu.acc = op1 ^ op2;
-    break;
-    case 7:  //cmp
-      computer.alu.flags[a] = (op1 > op2);
-      computer.alu.flags[e] = (op1 == op2);
-    break;
+  if (opcode == add) {
+      cpu.acc = op1 + op2 + cf;
+      alu.flags[c] = ((op1 + op2 + cf) > MAX_BYTE_VALUE) ? true : false; 
+  }else if (opcode == shl){
+      cpu.acc = (op1 << 1) | cf;
+      alu.flags[c] = (op1 & 128) ? true : false; 
+  }else if (opcode == shr){
+      cpu.acc = (op1 >> 1) | (cf ? 128 : 0); 
+      alu.flags[c] = (op1 & 1) ? true : false; 
+  }else if (opcode == not){
+      cpu.acc = ~op1;
+  }else if (opcode == and){
+      cpu.acc = op1 & op2;
+  }else if (opcode == or){
+      cpu.acc = op1 | op2;
+  }else if (opcode == xor){
+      cpu.acc = op1 ^ op2;
+  }else if (opcode == cmp){
+      alu.flags[a] = (op1 > op2);
+      alu.flags[e] = (op1 == op2);
   }
-    computer.alu.flags[z] = (computer.cpu.acc == 0);
+  alu.flags[z] = (cpu.acc == 0);
 }
 
-void execute_step1(){
-  computer.bus = computer.cpu.iar;
-  alu(0,1); // set ALU compute new IAR (Bus input + bus 1) and put it into ACC and put bus 
-  computer.memory.mar = computer.bus;
+void step1(){
+  bus = cpu.iar;
+  call_alu(0,1);
+  mem.mar = bus;
 }
 
-void execute_step2(){
-  computer.bus = computer.memory.ram[computer.bus]; //enable: put ram content at addr in bus on bus
-  computer.cpu.ir = computer.bus; //set: put bus into instruction register
+void step2(){
+  bus = mem.ram[bus]; 
+  cpu.ir = bus; 
 }
 
-void execute_step3(){
-  computer.bus = computer.cpu.acc; //enable:: put acc in bus
-  computer.cpu.iar = computer.bus; //set: put bus into iar
+void step3(){
+  bus = cpu.acc;
+  cpu.iar = bus;
 }
 
-void load(byte operand1,byte operand2){
-  //step 4
-  computer.bus = computer.cpu.regs[operand1]; //enable
-  computer.memory.mar = computer.bus; //set
-  //step 5 
-  computer.bus = computer.memory.ram[computer.memory.mar]; //enable
-  computer.cpu.regs[operand2] = computer.bus; //set
-}
+void step4(){
+  byte op = cpu.ir >> 4; 
+  byte opr = (cpu.ir & 15);
+  byte opr1 = (opr & 12) >> 2;
+  byte opr2 = (opr & 3);
 
-void store(byte operand1,byte operand2){
-  //step 4 
-  printf("operand %i",computer.cpu.regs[operand1]);
-  computer.bus = computer.cpu.regs[operand1]; //enable
-  computer.memory.mar = computer.bus; //set
-  //step 5 
-  computer.bus = computer.cpu.regs[operand2]; //enable
-  computer.memory.ram[computer.memory.mar] = computer.bus; //enable
-}
-
-void data(byte operand1){
-  //step4
-  computer.bus = computer.cpu.iar; //enable
-  alu(0,1); //increment iar
-  computer.memory.mar = computer.bus; //set
-
-  //step5
-  computer.bus = computer.memory.ram[computer.memory.mar]; //enable
-  computer.cpu.regs[operand1] = computer.bus; //set
-  
-  //step6
-  computer.bus = computer.cpu.acc; //enable:: put acc in bus
-  computer.cpu.iar = computer.bus; //set: put bus into iar
-}
-
-void jumpr(byte operand1){
-  //step4 
-  computer.bus = computer.cpu.regs[operand1]; //enable 
-  computer.cpu.iar = computer.bus;     //set
-}
-
-void jump(){
-  //step4
-  computer.bus = computer.cpu.iar; //enable
-  computer.memory.mar = computer.bus; //set
-
-  //step5
-  computer.bus = computer.memory.ram[computer.memory.mar];
-  computer.cpu.iar = computer.bus;
-}
-
-void jumpc(byte operands){
-  //step4
-  computer.bus = computer.cpu.iar;  //enable 
-  computer.memory.mar = computer.bus; //set
-  alu(0,1); //increment iar 
-
-  //step5 
-  computer.bus = computer.cpu.acc; //enable 
-  computer.cpu.iar = computer.bus; //set
-
-  //step6 
-  byte res = 0;
-  res |=   computer.alu.flags[z] | 
-          (computer.alu.flags[e] ? 2 : 0) | 
-          (computer.alu.flags[a] ? 4 : 0) | 
-          (computer.alu.flags[c] ? 8 : 0);
-  
-  if (res & operands){ 
-    computer.bus = computer.memory.ram[computer.memory.mar];
-    computer.cpu.iar = computer.bus;
+  if (op == load || op == store || op == jumpr) {               
+    bus = cpu.regs[opr1]; 
+    mem.mar = bus; 
+  }else if (op == data || jumpc){        
+    bus = cpu.iar; 
+    call_alu(0,1); 
+    mem.mar = bus; 
+  }else if (op == jump){      
+    bus = cpu.iar; 
+    mem.mar = bus; 
+  }else if (op == clear){ 
+    for (int i = 0; i < 4; i++){ alu.flags[i] = false; }
+  }else if (op > 7){
+    bus = cpu.regs[opr2];
+    cpu.tmp = bus;
   }
 }
 
-void clear(){
-  //step 4
-  for (int i = 0; i < sizeof(computer.alu.flags); i++){
-    computer.alu.flags[i] = false;
-  }
-}
- 
+void step5(){
+  byte op = cpu.ir >> 4; 
+  byte opr = (cpu.ir & 15);
+  byte opr1 = (opr & 12) >> 2;
+  byte opr2 = (opr & 3);
 
-void execute_instruction(){
-  byte operation = computer.cpu.ir >> 4; 
-  byte operands = (computer.cpu.ir & 15);
-  byte operand1 = (operands & 12) >> 2;
-  byte operand2 = (operands & 3);
-
-  if (operation == 0){
-    load(operand1,operand2);
-  }else if (operation == 1){
-    store(operand1,operand2);
-  }else if (operation == 2){
-    data(operand2);
-  }else if (operation == 3){
-    jumpr(operand1);
-  }else if (operation == 4){
-    jump(operand1);
-  }else if (operation == 5){
-    jumpc(operands);
-  }else if (operation == 6){
-    clear();
-  }else if (operation > 7){
-    computer.bus = computer.cpu.regs[operand2];
-    computer.cpu.tmp = computer.bus;
-    computer.bus = computer.cpu.regs[operand1];
-    byte opcode = operation & 7; 
-    alu(opcode,0);
+  if (op == load) {         
+    bus = mem.ram[mem.mar]; 
+    cpu.regs[opr2] = bus; 
+  }else if (op == store){  
+    bus = cpu.regs[opr2]; 
+    mem.ram[mem.mar] = bus; 
+  }else if (op == data){  
+    bus = mem.ram[mem.mar]; 
+    cpu.regs[opr1] = bus; 
+  }else if (op == jumpr){
+    bus = cpu.regs[opr1]; 
+    cpu.iar = bus;     
+  }else if (op == jump){
+    bus = mem.ram[mem.mar];
+    cpu.iar = bus;
+  }else if (op == jumpc){ 
+    bus = cpu.acc; 
+    cpu.iar = bus; 
+  }else if (op > 7){
+    bus = cpu.regs[opr1];
+    byte opcode = op & 7; 
+    call_alu(opcode,0);
     if (opcode != 7){
       //execute move of the acc if not a cmp (not very clean)
-      computer.bus = computer.cpu.acc;
-      computer.cpu.regs[operand2] = computer.bus; //set: put result into operand2
+      bus = cpu.acc;
+      cpu.regs[opr2] = bus; //set: put result into operand2
     }
   }
-
-  printf("instruction %i\n", computer.cpu.ir);
-  printf("r0 %i\n",  computer.cpu.regs[0]);
-  printf("r1 %i\n",  computer.cpu.regs[1]);
-  printf("r2 %i\n",  computer.cpu.regs[2]);
-  printf("r3 %i\n",  computer.cpu.regs[3]);
-  printf("operation %i\n", operation); 
-  printf("opcode %i\n", operation & 7); 
-  printf("next iar %i\n", computer.cpu.iar);
-  printf("acc %i\n", computer.cpu.acc );
-  
 }
 
-// the 6 steps taken as a whole is called a instruction cycle
-// 3 for fetch and 3 for execution
-void do_step(){
-    if (currentStep == 1){
-      execute_step1();
-    }
-    if (currentStep == 2){
-      execute_step2();
-    }
-    if (currentStep == 3){
-      execute_step3();
-    }
-    if (currentStep == 4){
-      execute_instruction();
-    }
-    if (currentStep == 5){
-      currentStep = 0;
-    }
+void step6(){
+  byte op = cpu.ir >> 4; 
+  byte opr = (cpu.ir & 15);
+  byte opr1 = (opr & 12) >> 2;
+  byte opr2 = (opr & 3);
+
+  if (op == data){  
+    bus = cpu.acc; 
+    cpu.iar = bus; 
+  }else if (op == jumpc){ 
+    byte res = 0;
+    res |=   alu.flags[z] | 
+            (alu.flags[e] ? 2 : 0) | 
+            (alu.flags[a] ? 4 : 0) | 
+            (alu.flags[c] ? 8 : 0);
     
-    currentStep+=1;
+    if (res & opr){ 
+      bus = mem.ram[mem.mar];
+      cpu.iar = bus;
+    }
+  }else if (op > 7){
+    byte opcode = op & 7; 
+    if (opcode != 7){
+      //execute move of the acc if not a cmp (not very clean)
+      bus = cpu.acc;
+      cpu.regs[opr2] = bus; //set: put result into operand2
+    }
+
+  }
+}
+
+void cycle(){
+    if (currentStep == 1) { step1(); }
+    else if (currentStep == 2){ step2(); }
+    else if (currentStep == 3){ step3(); }
+    else if (currentStep == 4){ step4(); }
+    else if (currentStep == 5){ step5(); }
+    else if (currentStep == 6){ step6(); }
+    currentStep = (currentStep == 6) ? 1 : currentStep + 1;
 }
 
 void start(){
-  // A 1000 cycle
-  for (int i = 0; i < 1000; i++){
-    do_step(); // each step is one cycle 
+  for (int i = 0; i < 100; i++){ 
+    cycle(); 
   }
 }
 
@@ -256,19 +195,18 @@ void load_file(char * filename){
   filelen = ftell(fileptr);         
   rewind(fileptr);                 
 
-  fread(computer.memory.ram, filelen, 1, fileptr);
+  fread(mem.ram, filelen, 1, fileptr);
   fclose(fileptr); 
 }
 
 void print_ram(){
   for (int i = 0; i< 11; i++){
-    printf("computer ram at %i = %i\n",i,computer.memory.ram[i]);  
+    printf(" ram at %i = %i\n",i,mem.ram[i]);  
   }
 }
 
 int main(int argc, char *argv[]){
   load_file(argv[1]); 
-  print_ram();
   start();
-  
 }
+
