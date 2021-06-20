@@ -207,14 +207,12 @@ void print_ram(){
 }
 
 
-void displayMemory(int x,int y,int width,int height){
+void memWindow(int x,int y,int width,int height){
   WINDOW *winmem = newwin(height,width,y,x);
-  /* char* mem[12] = {"003","033","010","129","101","006","007","008", "022","100", "101","203"}; */
   box(winmem,0,0);
   int cellSize = 4;
   int cellsPerLine = width/cellSize;
   for (int i = 0; i < MEMORY_SIZE; i++){
-    // transform mem[i] in a char with trailing 0
     char memCell[4];
     sprintf(memCell,"%03d", mem.ram[i]);
     mvwprintw(winmem,(i/cellsPerLine)+1,(i%cellsPerLine)*cellSize+1,"%s",memCell);
@@ -222,25 +220,62 @@ void displayMemory(int x,int y,int width,int height){
   wrefresh(winmem);
 }
 
+void cpuWindow(int x,int y,int width,int height){
+  WINDOW *wincpu= newwin(height,width,y,x);
+  box(wincpu,0,0);
+  char r0[8],r1[8],r2[8],r3[8],ir[8],iar[9],tmp[9],acc[9];
+  sprintf(r0,"R0: %03d",cpu.regs[0]);
+  mvwprintw(wincpu,1,1,"%s",r0);
+  sprintf(r1,"R1: %03d",cpu.regs[1]);
+  mvwprintw(wincpu,2,1,"%s",r1);
+  sprintf(r2,"R2: %03d",cpu.regs[2]);
+  mvwprintw(wincpu,3,1,"%s",r2);
+  sprintf(r3,"R3: %03d",cpu.regs[3]);
+  mvwprintw(wincpu,4,1,"%s",r3);
+  sprintf(ir,"IR: %03d",cpu.ir);
+  mvwprintw(wincpu,6,1,"%s",ir);
+  sprintf(iar,"IAR: %03d",cpu.iar);
+  mvwprintw(wincpu,7,1,"%s",iar);
+  sprintf(tmp,"TMP: %03d",cpu.tmp);
+  mvwprintw(wincpu,8,1,"%s",tmp);
+  sprintf(acc,"ACC: %03d",cpu.acc);
+  mvwprintw(wincpu,9,1,"%s",acc);
+  wrefresh(wincpu);
+}
+
+void busWindow(int x,int y,int width,int height){
+  WINDOW *winbus= newwin(height,width,y,x);
+  box(winbus,0,0);
+  char buss[10];
+  sprintf(buss,"BUS: %03d",bus);
+  mvwprintw(winbus,1,1,"%s",buss);
+  wrefresh(winbus);
+}
+
+void aluWindow(int x,int y,int width,int height){
+  WINDOW *winalu= newwin(height,width,y,x);
+  box(winalu,0,0);
+  char fc[7],fa[7],fe[7],fz[7];
+  sprintf(fc,"C: %03d",alu.flags[0]);
+  mvwprintw(winalu,1,1,"%s",fc);
+  sprintf(fa,"A: %03d",alu.flags[1]);
+  mvwprintw(winalu,2,1,"%s",fa);
+  sprintf(fe,"E: %03d",alu.flags[2]);
+  mvwprintw(winalu,3,1,"%s",fe);
+  sprintf(fz,"Z: %03d",alu.flags[3]);
+  mvwprintw(winalu,4,1,"%s",fz);
+  wrefresh(winalu);
+}
 
 void display(){
   initscr();
   clear();
   refresh();
-  displayMemory(20,20,62,20);
-  /* WINDOW *winprog = newwin(10,20,0,0); */
-  /* WINDOW *winalu = newwin(10,20,0,41); */ 
-  /* WINDOW *wincpu = newwin(10,20,0,61); */ 
-  /* WINDOW *winbus = newwin(10,20,0,81); */ 
-  /* box(winprog,0,0); */
-  /* box(winalu,0,0); */
-  /* box(wincpu,0,0); */
-  /* box(winbus,0,0); */
-  /* wrefresh(winprog); */
-  /* wrefresh(winalu); */
-  /* wrefresh(wincpu); */
-  /* wrefresh(winbus); */
-  int c = getch();
+  memWindow(20,20,62,20);
+  busWindow(84,20,20,3);
+  cpuWindow(84,23,20,17);
+  aluWindow(106,20,20,20);
+  int input = getch();
   endwin();
 }
 
@@ -250,7 +285,5 @@ int main(int argc, char *argv[]){
     exit(1);
   }
   load_file(argv[1]); 
-  //start();
-  //print_ram();
   display();
 }
