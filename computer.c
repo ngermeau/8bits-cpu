@@ -1,19 +1,21 @@
 #include <stdbool.h> 
 #include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h> 
+#include <ncurses.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define MAX_BYTE_VALUE 255
+#define MEMORY_SIZE 255
 
 typedef __uint8_t byte;
 
-enum operation {load,store,data,jumpr,jump,jumpc,clear};
+enum operation {load,store,data,jumpr,jump,jumpc,clf};
 enum opcode {add,shl,shr,not,and,or,xor,cmp};
 enum flags {c,a,e,z};
 
 struct Memory  {
     byte mar;
-    byte ram[256];
+    byte ram[MEMORY_SIZE];
 } mem;
 
 struct ALU {
@@ -94,7 +96,7 @@ void step4(){
   }else if (op == jump){      
     bus = cpu.iar; 
     mem.mar = bus; 
-  }else if (op == clear){ 
+  }else if (op == clf){ 
     for (int i = 0; i < 4; i++){ alu.flags[i] = false; }
   }else if (op > 7){
     bus = cpu.regs[opr2];
@@ -187,7 +189,6 @@ void start(){
 
 void load_file(char * filename){
   FILE *fileptr;
-  char *buffer;
   long filelen;
 
   fileptr = fopen(filename, "rb");  
@@ -200,13 +201,56 @@ void load_file(char * filename){
 }
 
 void print_ram(){
-  for (int i = 0; i< 11; i++){
-    printf(" ram at %i = %i\n",i,mem.ram[i]);  
+  char src[4];  //null terminator
+  sprintf(src,"%03d", 7);
+  printf("%s",src); 
+}
+
+
+void displayMemory(int x,int y,int width,int height){
+  WINDOW *winmem = newwin(height,width,y,x);
+  /* char* mem[12] = {"003","033","010","129","101","006","007","008", "022","100", "101","203"}; */
+  box(winmem,0,0);
+  int cellSize = 4;
+  int cellsPerLine = width/cellSize;
+  for (int i = 0; i < MEMORY_SIZE; i++){
+    // transform mem[i] in a char with trailing 0
+    char memCell[4];
+    sprintf(memCell,"%03d", mem.ram[i]);
+    mvwprintw(winmem,(i/cellsPerLine)+1,(i%cellsPerLine)*cellSize+1,"%s",memCell);
   }
+  wrefresh(winmem);
+}
+
+
+void display(){
+  initscr();
+  clear();
+  refresh();
+  displayMemory(20,20,62,20);
+  /* WINDOW *winprog = newwin(10,20,0,0); */
+  /* WINDOW *winalu = newwin(10,20,0,41); */ 
+  /* WINDOW *wincpu = newwin(10,20,0,61); */ 
+  /* WINDOW *winbus = newwin(10,20,0,81); */ 
+  /* box(winprog,0,0); */
+  /* box(winalu,0,0); */
+  /* box(wincpu,0,0); */
+  /* box(winbus,0,0); */
+  /* wrefresh(winprog); */
+  /* wrefresh(winalu); */
+  /* wrefresh(wincpu); */
+  /* wrefresh(winbus); */
+  int c = getch();
+  endwin();
 }
 
 int main(int argc, char *argv[]){
+  if (argv[1] == NULL){
+    printf("please enter a binary file\n");
+    exit(1);
+  }
   load_file(argv[1]); 
-  start();
+  //start();
+  //print_ram();
+  display();
 }
-
