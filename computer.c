@@ -28,12 +28,10 @@ struct CPU {
   byte ir;
   byte tmp;
   byte acc;
+  byte step;
 } cpu;
 
 byte bus;
-
-
-int currentStep = 1; 
 
 void call_alu(byte opcode, byte bus1){
   byte op1 = bus;
@@ -172,13 +170,13 @@ void step6(){
 }
 
 void cycle(){
-    if (currentStep == 1) { step1(); }
-    else if (currentStep == 2){ step2(); }
-    else if (currentStep == 3){ step3(); }
-    else if (currentStep == 4){ step4(); }
-    else if (currentStep == 5){ step5(); }
-    else if (currentStep == 6){ step6(); }
-    currentStep = (currentStep == 6) ? 1 : currentStep + 1;
+    if (cpu.step == 1) { step1(); }
+    else if (cpu.step == 2){ step2(); }
+    else if (cpu.step == 3){ step3(); }
+    else if (cpu.step == 4){ step4(); }
+    else if (cpu.step == 5){ step5(); }
+    else if (cpu.step == 6){ step6(); }
+    cpu.step = (cpu.step == 6) ? 1 : cpu.step + 1;
 }
 
 void start(){
@@ -212,10 +210,19 @@ void memWindow(int x,int y,int width,int height){
   box(winmem,0,0);
   int cellSize = 4;
   int cellsPerLine = width/cellSize;
+  start_color();
+  init_pair(1,COLOR_CYAN,COLOR_WHITE);
   for (int i = 0; i < MEMORY_SIZE; i++){
     char memCell[4];
     sprintf(memCell,"%03d", mem.ram[i]);
+    if (i == 0){
+      attron(COLOR_PAIR(1));
+    }
+    printw("here");
     mvwprintw(winmem,(i/cellsPerLine)+1,(i%cellsPerLine)*cellSize+1,"%s",memCell);
+    if (i == 3){
+      attroff(COLOR_PAIR(1));
+    }
   }
   wrefresh(winmem);
 }
@@ -223,7 +230,7 @@ void memWindow(int x,int y,int width,int height){
 void cpuWindow(int x,int y,int width,int height){
   WINDOW *wincpu= newwin(height,width,y,x);
   box(wincpu,0,0);
-  char r0[8],r1[8],r2[8],r3[8],ir[8],iar[9],tmp[9],acc[9];
+  char r0[8],r1[8],r2[8],r3[8],ir[8],iar[9],tmp[9],acc[9],step[10];
   sprintf(r0,"R0: %03d",cpu.regs[0]);
   mvwprintw(wincpu,1,1,"%s",r0);
   sprintf(r1,"R1: %03d",cpu.regs[1]);
@@ -240,6 +247,8 @@ void cpuWindow(int x,int y,int width,int height){
   mvwprintw(wincpu,8,1,"%s",tmp);
   sprintf(acc,"ACC: %03d",cpu.acc);
   mvwprintw(wincpu,9,1,"%s",acc);
+  sprintf(step,"STEP: %03d",cpu.step);
+  mvwprintw(wincpu,11,1,"%s",step);
   wrefresh(wincpu);
 }
 
@@ -271,11 +280,14 @@ void display(){
   initscr();
   clear();
   refresh();
-  memWindow(20,20,62,20);
-  busWindow(84,20,20,3);
-  cpuWindow(84,23,20,17);
-  aluWindow(106,20,20,20);
-  int input = getch();
+  while(true){
+    memWindow(20,20,62,20);
+    busWindow(84,20,20,3);
+    cpuWindow(84,23,20,17);
+    aluWindow(106,20,20,20);
+    int input = getch();
+    cycle();
+  }
   endwin();
 }
 
@@ -284,6 +296,12 @@ int main(int argc, char *argv[]){
     printf("please enter a binary file\n");
     exit(1);
   }
+  if (has_colors()){
+    printf("yes it has\n");
+  }else {
+    printf("no it has\n");
+  }
   load_file(argv[1]); 
-  display();
+  //cpu.step = 1;
+  //display();
 }
