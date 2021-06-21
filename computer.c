@@ -53,6 +53,7 @@ void call_alu(byte opcode, byte bus1){
       cpu.acc = (op1 << 1) | cf;
       alu.flags[c] = (op1 & 128) ? true : false; 
   }else if (opcode == shr){
+      sprintf(message,"shifting right");
       cpu.acc = (op1 >> 1) | (cf ? 128 : 0); 
       alu.flags[c] = (op1 & 1) ? true : false; 
   }else if (opcode == not){
