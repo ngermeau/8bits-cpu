@@ -33,6 +33,8 @@ struct CPU {
 
 byte bus;
 
+char message[80];
+
 void call_alu(byte opcode, byte bus1){
   byte op1 = bus;
   byte op2 = bus1 ? bus1 : cpu.tmp;
@@ -63,17 +65,20 @@ void call_alu(byte opcode, byte bus1){
 }
 
 void step1(){
+  sprintf(message,"pushed iar into mar and alu computing next iar into acc");
   bus = cpu.iar;
   call_alu(0,1);
   mem.mar = bus;
 }
 
 void step2(){
+  sprintf(message,"pushed next instruction from ram into ir");
   bus = mem.ram[bus]; 
   cpu.ir = bus; 
 }
 
 void step3(){
+  sprintf(message,"pushed acc into iar");
   bus = cpu.acc;
   cpu.iar = bus;
 }
@@ -84,10 +89,11 @@ void step4(){
   byte opr1 = (opr & 12) >> 2;
   byte opr2 = (opr & 3);
 
+  sprintf(message,"executed step 4 for instruction: %03d", op);
   if (op == load || op == store || op == jumpr) {               
     bus = cpu.regs[opr1]; 
     mem.mar = bus; 
-  }else if (op == data || jumpc){        
+  }else if (op == data || op == jumpc){        
     bus = cpu.iar; 
     call_alu(0,1); 
     mem.mar = bus; 
@@ -95,7 +101,9 @@ void step4(){
     bus = cpu.iar; 
     mem.mar = bus; 
   }else if (op == clf){ 
-    for (int i = 0; i < 4; i++){ alu.flags[i] = false; }
+    for (int i = 0; i < 4; i++){ 
+      alu.flags[i] = false;
+    }
   }else if (op > 7){
     bus = cpu.regs[opr2];
     cpu.tmp = bus;
@@ -108,6 +116,7 @@ void step5(){
   byte opr1 = (opr & 12) >> 2;
   byte opr2 = (opr & 3);
 
+  sprintf(message,"executed step 5 for instruction: %03d", op);
   if (op == load) {         
     bus = mem.ram[mem.mar]; 
     cpu.regs[opr2] = bus; 
@@ -116,7 +125,7 @@ void step5(){
     mem.ram[mem.mar] = bus; 
   }else if (op == data){  
     bus = mem.ram[mem.mar]; 
-    cpu.regs[opr1] = bus; 
+    cpu.regs[opr2] = bus; 
   }else if (op == jumpr){
     bus = cpu.regs[opr1]; 
     cpu.iar = bus;     
@@ -144,6 +153,7 @@ void step6(){
   byte opr1 = (opr & 12) >> 2;
   byte opr2 = (opr & 3);
 
+  sprintf(message,"executed step 6 for instruction: %03d", op);
   if (op == data){  
     bus = cpu.acc; 
     cpu.iar = bus; 
@@ -204,25 +214,22 @@ void print_ram(){
   printf("%s",src); 
 }
 
+void messageWindow(int x,int y,int width,int height){
+  WINDOW *winmess = newwin(height,width,y,x);
+  box(winmess,0,0);
+  mvwprintw(winmess,1,1,"%s",message);
+  wrefresh(winmess);
+}
 
 void memWindow(int x,int y,int width,int height){
   WINDOW *winmem = newwin(height,width,y,x);
   box(winmem,0,0);
   int cellSize = 4;
   int cellsPerLine = width/cellSize;
-  start_color();
-  init_pair(1,COLOR_CYAN,COLOR_WHITE);
   for (int i = 0; i < MEMORY_SIZE; i++){
     char memCell[4];
     sprintf(memCell,"%03d", mem.ram[i]);
-    if (i == 0){
-      attron(COLOR_PAIR(1));
-    }
-    printw("here");
     mvwprintw(winmem,(i/cellsPerLine)+1,(i%cellsPerLine)*cellSize+1,"%s",memCell);
-    if (i == 3){
-      attroff(COLOR_PAIR(1));
-    }
   }
   wrefresh(winmem);
 }
@@ -230,7 +237,7 @@ void memWindow(int x,int y,int width,int height){
 void cpuWindow(int x,int y,int width,int height){
   WINDOW *wincpu= newwin(height,width,y,x);
   box(wincpu,0,0);
-  char r0[8],r1[8],r2[8],r3[8],ir[8],iar[9],tmp[9],acc[9],step[10];
+  char r0[8],r1[8],r2[8],r3[8],ir[8],iar[9],tmp[9],acc[9],step[10],opc[9],op1[9],op2[9];
   sprintf(r0,"R0: %03d",cpu.regs[0]);
   mvwprintw(wincpu,1,1,"%s",r0);
   sprintf(r1,"R1: %03d",cpu.regs[1]);
@@ -249,7 +256,31 @@ void cpuWindow(int x,int y,int width,int height){
   mvwprintw(wincpu,9,1,"%s",acc);
   sprintf(step,"STEP: %03d",cpu.step);
   mvwprintw(wincpu,11,1,"%s",step);
+
+  /* byte op = cpu.ir >> 4; */ 
+  //byte opr = (cpu.ir & 15);
+  
+  /* sprintf(opc,"C: %03d",op); */
+  /* mvwprintw(wincpu,13,1,"%s",op); */
+
+  /* byte opr1 = (opr & 12) >> 2; */
+  /* sprintf(op1,"O1: %03d",opr1); */
+  /* mvwprintw(wincpu,14,1,"%s",op1); */
+
+  /* byte opr2 = (opr & 3); */
+  /* sprintf(op2,"O2: %03d",opr2); */
+  /* mvwprintw(wincpu,15,1,"%s",op2); */
+
   wrefresh(wincpu);
+}
+
+void marWindow(int x,int y,int width,int height){
+  WINDOW *winmar= newwin(height,width,y,x);
+  box(winmar,0,0);
+  char mar[10];
+  sprintf(mar,"mar: %03d",mem.mar);
+  mvwprintw(winmar,1,1,"%s",mar);
+  wrefresh(winmar);
 }
 
 void busWindow(int x,int y,int width,int height){
@@ -282,9 +313,11 @@ void display(){
   refresh();
   while(true){
     memWindow(20,20,62,20);
-    busWindow(84,20,20,3);
-    cpuWindow(84,23,20,17);
+    marWindow(84,20,20,3);
+    busWindow(84,23,20,3);
+    cpuWindow(84,26,20,14);
     aluWindow(106,20,20,20);
+    messageWindow(20,40,106,3);
     int input = getch();
     cycle();
   }
@@ -296,12 +329,7 @@ int main(int argc, char *argv[]){
     printf("please enter a binary file\n");
     exit(1);
   }
-  if (has_colors()){
-    printf("yes it has\n");
-  }else {
-    printf("no it has\n");
-  }
   load_file(argv[1]); 
-  //cpu.step = 1;
-  //display();
+  cpu.step = 1;
+  display();
 }
