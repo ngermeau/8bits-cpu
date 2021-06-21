@@ -26,6 +26,12 @@ struct CPU {
   byte regs[4];
   byte iar;
   byte ir;
+  struct op {
+    byte code;
+    byte regs;
+    byte rega;
+    byte regb;
+  } op;
   byte tmp;
   byte acc;
   byte step;
@@ -75,6 +81,10 @@ void step2(){
   sprintf(message,"pushed next instruction from ram into ir");
   bus = mem.ram[bus]; 
   cpu.ir = bus; 
+  cpu.op.code = cpu.ir >> 4; 
+  cpu.op.regs= (cpu.ir & 15);
+  cpu.op.rega = (cpu.op.regs & 12) >> 2;
+  cpu.op.regb = (cpu.op.regs & 3);
 }
 
 void step3(){
@@ -84,96 +94,82 @@ void step3(){
 }
 
 void step4(){
-  byte op = cpu.ir >> 4; 
-  byte opr = (cpu.ir & 15);
-  byte opr1 = (opr & 12) >> 2;
-  byte opr2 = (opr & 3);
-
-  sprintf(message,"executed step 4 for instruction: %03d", op);
-  if (op == load || op == store || op == jumpr) {               
-    bus = cpu.regs[opr1]; 
+  sprintf(message,"executed step 4 for instruction: %03d", cpu.op.code);
+  if (cpu.op.code == load || cpu.op.code == store) {               
+    bus = cpu.regs[cpu.op.rega]; 
     mem.mar = bus; 
-  }else if (op == data || op == jumpc){        
+  }else if (cpu.op.code == data || cpu.op.code == jumpc){        
     bus = cpu.iar; 
     call_alu(0,1); 
     mem.mar = bus; 
-  }else if (op == jump){      
+  }else if (cpu.op.code == jumpr){
+    sprintf(message,"jumping in : %03d", cpu.op.regb);
+    bus = cpu.regs[cpu.op.regb]; 
+    cpu.iar = bus;     
+  }else if (cpu.op.code == jump){      
     bus = cpu.iar; 
     mem.mar = bus; 
-  }else if (op == clf){ 
+  }else if (cpu.op.code == clf){ 
     for (int i = 0; i < 4; i++){ 
       alu.flags[i] = false;
     }
-  }else if (op > 7){
-    bus = cpu.regs[opr2];
+  }else if (cpu.op.code > 7){
+    bus = cpu.regs[cpu.op.regb];
     cpu.tmp = bus;
   }
 }
 
 void step5(){
-  byte op = cpu.ir >> 4; 
-  byte opr = (cpu.ir & 15);
-  byte opr1 = (opr & 12) >> 2;
-  byte opr2 = (opr & 3);
-
-  sprintf(message,"executed step 5 for instruction: %03d", op);
-  if (op == load) {         
+  sprintf(message,"executed step 5 for instruction: %03d", cpu.op.code);
+  if (cpu.op.code == load) {         
     bus = mem.ram[mem.mar]; 
-    cpu.regs[opr2] = bus; 
-  }else if (op == store){  
-    bus = cpu.regs[opr2]; 
+    cpu.regs[cpu.op.regb] = bus; 
+  }else if (cpu.op.code == store){  
+    bus = cpu.regs[cpu.op.regb]; 
     mem.ram[mem.mar] = bus; 
-  }else if (op == data){  
+  }else if (cpu.op.code == data){  
     bus = mem.ram[mem.mar]; 
-    cpu.regs[opr2] = bus; 
-  }else if (op == jumpr){
-    bus = cpu.regs[opr1]; 
-    cpu.iar = bus;     
-  }else if (op == jump){
+    cpu.regs[cpu.op.regb] = bus; 
+  }else if (cpu.op.code == jump){
     bus = mem.ram[mem.mar];
     cpu.iar = bus;
-  }else if (op == jumpc){ 
+  }else if (cpu.op.code == jumpc){ 
     bus = cpu.acc; 
     cpu.iar = bus; 
-  }else if (op > 7){
-    bus = cpu.regs[opr1];
-    byte opcode = op & 7; 
+  }else if (cpu.op.code > 7){
+    bus = cpu.regs[cpu.op.rega];
+    byte opcode = cpu.op.code & 7; 
     call_alu(opcode,0);
     if (opcode != 7){
       //execute move of the acc if not a cmp (not very clean)
       bus = cpu.acc;
-      cpu.regs[opr2] = bus; //set: put result into operand2
+      cpu.regs[cpu.op.regb] = bus; //set: put result into operand2
     }
   }
 }
 
 void step6(){
-  byte op = cpu.ir >> 4; 
-  byte opr = (cpu.ir & 15);
-  byte opr1 = (opr & 12) >> 2;
-  byte opr2 = (opr & 3);
-
-  sprintf(message,"executed step 6 for instruction: %03d", op);
-  if (op == data){  
+  sprintf(message,"executed step 6 for instruction: %03d", cpu.op.code);
+  if (cpu.op.code == data){  
     bus = cpu.acc; 
     cpu.iar = bus; 
-  }else if (op == jumpc){ 
+  }else if (cpu.op.code == jumpc){ 
     byte res = 0;
     res |=   alu.flags[z] | 
             (alu.flags[e] ? 2 : 0) | 
             (alu.flags[a] ? 4 : 0) | 
             (alu.flags[c] ? 8 : 0);
     
-    if (res & opr){ 
+    if (res & cpu.op.regs){ 
       bus = mem.ram[mem.mar];
       cpu.iar = bus;
     }
-  }else if (op > 7){
-    byte opcode = op & 7; 
+  }else if (cpu.op.code > 7){
+    byte opcode = cpu.op.code & 7; 
     if (opcode != 7){
       //execute move of the acc if not a cmp (not very clean)
       bus = cpu.acc;
-      cpu.regs[opr2] = bus; //set: put result into operand2
+      cpu.regs[cpu.op.regb] = bus; 
     }
 
   }
@@ -189,11 +185,6 @@ void cycle(){
     cpu.step = (cpu.step == 6) ? 1 : cpu.step + 1;
 }
 
-void start(){
-  for (int i = 0; i < 100; i++){ 
-    cycle(); 
-  }
-}
 
 void load_file(char * filename){
   FILE *fileptr;
@@ -256,20 +247,6 @@ void cpuWindow(int x,int y,int width,int height){
   mvwprintw(wincpu,9,1,"%s",acc);
   sprintf(step,"STEP: %03d",cpu.step);
   mvwprintw(wincpu,11,1,"%s",step);
-
-  /* byte op = cpu.ir >> 4; */ 
-  //byte opr = (cpu.ir & 15);
-  
-  /* sprintf(opc,"C: %03d",op); */
-  /* mvwprintw(wincpu,13,1,"%s",op); */
-
-  /* byte opr1 = (opr & 12) >> 2; */
-  /* sprintf(op1,"O1: %03d",opr1); */
-  /* mvwprintw(wincpu,14,1,"%s",op1); */
-
-  /* byte opr2 = (opr & 3); */
-  /* sprintf(op2,"O2: %03d",opr2); */
-  /* mvwprintw(wincpu,15,1,"%s",op2); */
 
   wrefresh(wincpu);
 }
