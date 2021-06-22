@@ -4,4 +4,4 @@ data r2,4
 add r0,r1
 clf
 cmp r2,r1 
-ja 6  
+ja 6        ;count until we reach r2 

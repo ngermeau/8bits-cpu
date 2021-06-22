@@ -5,4 +5,4 @@ data r3,2
 not r0,r0
 and r0,r1
 or r1,r2
-xor r2,r3
+xor r2,r3     ;output shoud be 13 in r3

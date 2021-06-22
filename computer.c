@@ -187,11 +187,6 @@ void load_file(char * filename){
   fclose(fileptr); 
 }
 
-void print_ram(){
-  char src[4];  //null terminator
-  sprintf(src,"%03d", 7);
-  printf("%s",src); 
-}
 
 void messageWindow(int x,int y,int width,int height){
   WINDOW *winmess = newwin(height,width,y,x);

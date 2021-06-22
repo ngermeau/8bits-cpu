@@ -3,10 +3,7 @@
 
 # Todo
 
-[ ] verify not_and_or_xor    
 [ ] write a correct readme (supported instructions etc...)    
-[ ] create make file 
-[ ] split in multiple file
 [ ] write fibonnaci   
 [ ] write your own assembly compiler   
 [x] let a program be passed in parameter   
@@ -19,9 +16,9 @@
 [x] be able to execute cycle per cycle with info     
 [x] display graphical rendering of memory, regs... (use ncurse lib)    
 [x] exception for not moving acc to register in case of CMP not very clean       
+[x] verify not_and_or_xor    
+[x] create make file 
 
 
 # Demo programs
 
-- add: add two value 
-- counter: increment r1 until value of r2 and then stop
