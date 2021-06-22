@@ -9,8 +9,7 @@
 
 typedef __uint8_t byte;
 
-enum operation {load,store,data,jumpr,jump,jumpc,clf};
-enum opcode {add,shl,shr,not,and,or,xor,cmp};
+enum operation {load,store,data,jumpr,jump,jumpc,clf,nop,add,shl,shr,not,and,or,xor,cmp};
 enum flags {c,a,e,z};
 
 struct Memory  {
@@ -41,30 +40,29 @@ byte bus;
 
 char message[80];
 
-void call_alu(byte opcode, byte bus1){
+void call_alu(byte operation, byte bus1){
   byte op1 = bus;
   byte op2 = bus1 ? bus1 : cpu.tmp;
   byte cf = alu.flags[c] ? 1 : 0;
 
-  if (opcode == add) {
+  if (operation == add) {
       cpu.acc = op1 + op2 + cf;
       alu.flags[c] = ((op1 + op2 + cf) > MAX_BYTE_VALUE) ? true : false; 
-  }else if (opcode == shl){
+  }else if (operation == shl){
       cpu.acc = (op1 << 1) | cf;
       alu.flags[c] = (op1 & 128) ? true : false; 
-  }else if (opcode == shr){
-      sprintf(message,"shifting right");
+  }else if (operation == shr){
       cpu.acc = (op1 >> 1) | (cf ? 128 : 0); 
       alu.flags[c] = (op1 & 1) ? true : false; 
-  }else if (opcode == not){
+  }else if (operation == not){
       cpu.acc = ~op1;
-  }else if (opcode == and){
+  }else if (operation == and){
       cpu.acc = op1 & op2;
-  }else if (opcode == or){
+  }else if (operation == or){
       cpu.acc = op1 | op2;
-  }else if (opcode == xor){
+  }else if (operation == xor){
       cpu.acc = op1 ^ op2;
-  }else if (opcode == cmp){
+  }else if (operation == cmp){
       alu.flags[a] = (op1 > op2);
       alu.flags[e] = (op1 == op2);
   }
@@ -74,7 +72,7 @@ void call_alu(byte opcode, byte bus1){
 void step1(){
   sprintf(message,"pushed iar into mar and alu computing next iar into acc");
   bus = cpu.iar;
-  call_alu(0,1);
+  call_alu(add,1);
   mem.mar = bus;
 }
 
@@ -83,7 +81,7 @@ void step2(){
   bus = mem.ram[bus]; 
   cpu.ir = bus; 
   cpu.op.code = cpu.ir >> 4; 
-  cpu.op.regs= (cpu.ir & 15);
+  cpu.op.regs = (cpu.ir & 15);
   cpu.op.rega = (cpu.op.regs & 12) >> 2;
   cpu.op.regb = (cpu.op.regs & 3);
 }
@@ -101,10 +99,9 @@ void step4(){
     mem.mar = bus; 
   }else if (cpu.op.code == data || cpu.op.code == jumpc){        
     bus = cpu.iar; 
-    call_alu(0,1); 
+    call_alu(add,1); 
     mem.mar = bus; 
   }else if (cpu.op.code == jumpr){
-    sprintf(message,"jumping in : %03d", cpu.op.regb);
     bus = cpu.regs[cpu.op.regb]; 
     cpu.iar = bus;     
   }else if (cpu.op.code == jump){      
@@ -114,7 +111,7 @@ void step4(){
     for (int i = 0; i < 4; i++){ 
       alu.flags[i] = false;
     }
-  }else if (cpu.op.code > 7){
+  }else if (cpu.op.code > nop){
     bus = cpu.regs[cpu.op.regb];
     cpu.tmp = bus;
   }
@@ -137,14 +134,12 @@ void step5(){
   }else if (cpu.op.code == jumpc){ 
     bus = cpu.acc; 
     cpu.iar = bus; 
-  }else if (cpu.op.code > 7){
+  }else if (cpu.op.code > nop){
     bus = cpu.regs[cpu.op.rega];
-    byte opcode = cpu.op.code & 7; 
-    call_alu(opcode,0);
-    if (opcode != 7){
-      //execute move of the acc if not a cmp (not very clean)
+    call_alu(cpu.op.code,0);
+    if (cpu.op.code != cmp){ //push acc to reg if not cmp
       bus = cpu.acc;
-      cpu.regs[cpu.op.regb] = bus; //set: put result into operand2
+      cpu.regs[cpu.op.regb] = bus; 
     }
   }
 }
@@ -165,14 +160,6 @@ void step6(){
       bus = mem.ram[mem.mar];
       cpu.iar = bus;
     }
-  }else if (cpu.op.code > 7){
-    byte opcode = cpu.op.code & 7; 
-    if (opcode != 7){
-      //execute move of the acc if not a cmp (not very clean)
-      bus = cpu.acc;
-      cpu.regs[cpu.op.regb] = bus; 
-    }
-
   }
 }
 
@@ -210,6 +197,13 @@ void messageWindow(int x,int y,int width,int height){
   WINDOW *winmess = newwin(height,width,y,x);
   box(winmess,0,0);
   mvwprintw(winmess,1,1,"%s",message);
+  wrefresh(winmess);
+}
+
+void helpWindow(int x,int y,int width,int height){
+  WINDOW *winmess = newwin(height,width,y,x);
+  box(winmess,0,0);
+  mvwprintw(winmess,1,1,"%s","press any to execute one cycle and C-c to exit");
   wrefresh(winmess);
 }
 
@@ -296,6 +290,7 @@ void display(){
     cpuWindow(84,26,20,14);
     aluWindow(106,20,20,20);
     messageWindow(20,40,106,3);
+    helpWindow(20,43,106,3);
     int input = getch();
     cycle();
   }
@@ -307,6 +302,7 @@ int main(int argc, char *argv[]){
     printf("please enter a binary file\n");
     exit(1);
   }
+  printf("%s",argv[1]);
   load_file(argv[1]); 
   cpu.step = 1;
   display();
