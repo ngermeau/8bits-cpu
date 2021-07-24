@@ -18,6 +18,7 @@
 - [x] verify not_and_or_xor    
 - [x] create make file 
 - [x] write fibonnaci   
+- [ ] support lower/uppercase in asm file
 
 
 # Demo programs
