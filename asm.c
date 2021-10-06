@@ -20,10 +20,11 @@ struct instruction {
 };
 
 //enum operation {load,store,data,jumpr,jump,jumpc,clf,nop,add,shl,shr,not,and,or,xor,cmp};
+
 struct instruction instructions[3] = {
   {"ld",      1, 0x00, "REGS" },
-  /* {"st",      2, 0x01, "REGS" }, */
-  /* {"data",    2, 0x02, "REG_VAL" } */
+  {"st",      2, 0x01, "REGS" }, 
+  {"data",    2, 0x02, "REG_VAL" }
 };
 
 struct reg {
@@ -68,9 +69,16 @@ bool is_symbol(char *line){
 } 
 
 struct instruction find_instruction(char * operation){
-   int instruction_size = sizeof(instructions) / sizeof(struct instruction);
-   for (int i = 0; i< instruction_size; i++){
+   //printf("test: \n");
+   //printf("instructions size: % \n", sizeof(instructions));
+   //int instruction_size = sizeof(instructions) / sizeof(struct instruction);
+   //:w
+      printf("op: %s\n ",operation);
+   for (int i = 0; i< 1 ; i++){
       if (!strcmp(instructions[i].name,operation)){
+        printf("instruction found\n");
+        printf("inst name: %s\n",instructions[i].name);
+        printf("inst lenght: %i\n",instructions[i].length);
         return instructions[i];
       }
    }
@@ -85,18 +93,29 @@ void add_symbol_to_table(char* line,int address){
   symbol_count++; 
 }
 
+void print_symbols_table(){
+ for (int i = 0; i< 5; i++){
+  printf("%s: %i\n",symbols[i].name, symbols[i].address);
+ }
+}
 
 void create_symbol_table(struct file* file){
   int addr= 0;
   for (int i = 0; i<file->nbr_lines ;i++){
+    printf("parsing line %s\n",file->lines[i]);
     if (is_symbol(file->lines[i])){
+      printf("symbol found\n");
       add_symbol_to_table(file->lines[i],addr);
+      printf("symbol added\n");
     }else {
+      printf("instruction line \n");
       struct instruction instr= find_instruction(file->lines[i]);
       addr+=instr.length;
     }
   }
+  print_symbols_table();
 }
+
 
 struct reg find_reg(char* reg){
    int reg_size = sizeof(regs) / sizeof(struct reg);
@@ -182,8 +201,8 @@ int main(int argc, char *argv[]){
   }
   struct file* file=  load_file(argv[1]); 
   //display_file(file);
-  //create_symbol_table(file);
-  compile(file);
+  create_symbol_table(file);
+  //compile(file);
   //display_symbol_table();
   //write_to_file();
 }
