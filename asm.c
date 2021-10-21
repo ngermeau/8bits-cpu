@@ -26,12 +26,6 @@ struct instruction_ref instructions_ref_table[3] = {
   {"data",    2, 0x02, "REG_VAL" }
 };
 
-struct instruction {
-  char* operation;
-  char* operand1;
-  char* operand2;
-};
-
 struct register_ref {
   char* name;
   int value;
@@ -44,13 +38,19 @@ struct register_ref registers_ref_table[4] = {
   {"r3", 0x03 },
 };
 
+struct instruction {
+  char* operation;
+  char* operand1;
+  char* operand2;
+};
+
 struct symbol {
   char* name;
   int address;
 };
 
-int symbol_count = 0;
-struct symbol symbols[20];
+int symbol_table_size = 0;
+struct symbol* symbols_table;
 
 void write_to_file(){
   FILE* fp= fopen("compiled.out", "w"); 
@@ -58,12 +58,6 @@ void write_to_file(){
     fputc(i, fp );  
   }
   fclose(fp);
-}
-
-void display_symbol_table(){
-  for (int i = 0; i<20;i++){
-    printf("%i value: %s\n",symbols[i].address, symbols[i].name);
-  }
 }
 
 bool is_symbol(char *line){
@@ -94,14 +88,20 @@ struct instruction_ref find_instruction_ref(char* operation){
 
 void print_symbols_table(){
  for (int i = 0; i< 5; i++){
-  printf("%s: %i\n",symbols[i].name, symbols[i].address);
+  printf("%s: %i\n",symbols_table[i].name, symbols_table[i].address);
  }
 }
 
-struct symbol* from_line_to_symbol(char* line){
+struct symbol* add_to_symbols_table(char* line, int current_address){
   struct symbol* symbol = (struct symbol*) malloc(sizeof(struct symbol));
   symbol->name = line; //remove :
-  return symbol;
+  symbol->address = current_address;
+
+  symbol_table_size++;
+  printf("size: %d\n",symbol_table_size);
+  printf("size of symbol %ld\n",sizeof(struct symbol));
+  symbols_table = (struct symbol*) realloc(symbols_table,symbol_table_size * sizeof(struct symbol));
+  symbols_table[symbol_table_size] = *symbol;
 }
 
 struct instruction* from_line_to_instruction(char* line){
@@ -130,10 +130,7 @@ void create_symbol_table(struct file* file){
       printf("empty line found\n");
     } else if (is_symbol(file->lines[i])){
       printf("symbol found\n");
-      struct symbol* symbol = from_line_to_symbol(current_line);
-      symbol->address = current_address;
-      symbols[symbol_count] = *symbol; 
-      symbol_count++; 
+      add_to_symbols_table(current_line,current_address);
       printf("symbol added\n");
     }else {
       printf("instruction line \n");
@@ -144,7 +141,6 @@ void create_symbol_table(struct file* file){
   }
   print_symbols_table();
 }
-
 
 
 //struct reg find_reg(char* reg){
@@ -224,6 +220,7 @@ struct file* load_file(char* filename){
 }
 
 int main(int argc, char *argv[]){
+  symbols_table = (struct symbol*) malloc(0);
   // if (argv[1] == NULL){
   //   printf("please enter a assembly file\n");
   //   exit(1);
