@@ -49,8 +49,8 @@ struct symbol {
   int address;
 };
 
-int symbol_table_size = 0;
 struct symbol* symbols_table;
+int symbol_table_size = 0;
 
 void write_to_file(){
   FILE* fp= fopen("compiled.out", "w"); 
@@ -87,21 +87,22 @@ struct instruction_ref find_instruction_ref(char* operation){
 
 
 void print_symbols_table(){
- for (int i = 0; i< 5; i++){
-  printf("%s: %i\n",symbols_table[i].name, symbols_table[i].address);
+ for (int i = 0; i < symbol_table_size ; i++){
+  printf("%s: \n",((struct symbol) symbols_table[i]).name);
  }
 }
 
-struct symbol* add_to_symbols_table(char* line, int current_address){
+void add_to_symbols_table(char* line, int current_address){
   struct symbol* symbol = (struct symbol*) malloc(sizeof(struct symbol));
   symbol->name = line; //remove :
   symbol->address = current_address;
-
-  symbol_table_size++;
-  printf("size: %d\n",symbol_table_size);
-  printf("size of symbol %ld\n",sizeof(struct symbol));
-  symbols_table = (struct symbol*) realloc(symbols_table,symbol_table_size * sizeof(struct symbol));
+  int size = (symbol_table_size + 1) * sizeof(struct symbol);
+  printf("new size: %d\n", size);
+  // symbols_table = (struct symbol*) realloc(symbols_table,(symbol_table_size + 1) * sizeof(struct symbol));
+  symbols_table = (struct symbol*) realloc(symbols_table,size);
+  printf("new size allocated\n");
   symbols_table[symbol_table_size] = *symbol;
+  symbol_table_size++;
 }
 
 struct instruction* from_line_to_instruction(char* line){
