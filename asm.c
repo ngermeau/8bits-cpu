@@ -17,7 +17,7 @@ struct instruction_ref
 {
   char *operation;
   int length;
-  int value;
+  byte value;
   char *operand_type;
 };
 
@@ -57,10 +57,10 @@ struct instruction_ref instructions_ref_table[] = {
 struct register_ref
 {
   char *name;
-  int value;
+  byte value;
 };
 
-struct register_ref registers_ref_table[4] = {
+struct register_ref registers_ref_table[] = {
     {"r0", 0x00},
     {"r1", 0x01},
     {"r2", 0x02},
@@ -104,12 +104,25 @@ bool is_symbol(char *line)
 
 struct instruction_ref find_instruction_ref(char *operation)
 {
-  for (int i = 0; i < 3; i++)
+  int inst_table_size = sizeof(instructions_ref_table) / sizeof(struct instruction_ref);
+  for (int i = 0; i < inst_table_size; i++)
   {
     if (!strcmp(instructions_ref_table[i].operation, operation))
     {
       struct instruction_ref instruction_ref = instructions_ref_table[i];
       return instruction_ref;
+    }
+  } // bad because if you don't return anything
+}
+int find_register_ref_translation(char* name){
+  printf("trying to find register %s\n",name);
+  int reg_table_size = sizeof(registers_ref_table) / sizeof(struct register_ref);
+  for (int i = 0; i < reg_table_size; i++)
+  {
+    if (!strcmp(registers_ref_table[i].name, name))
+    {
+      struct register_ref register_ref = registers_ref_table[i];
+      return register_ref.value;
     }
   } // bad because if you don't return anything
 }
@@ -135,11 +148,17 @@ void add_to_symbols_table(char *line, int current_address)
 
 struct instruction *from_line_to_instruction(char *line)
 {
+  printf("line before) %s\n", line);
+  char* tempstr = calloc(strlen(line)+1, sizeof(char));
+  strcpy(tempstr, line);
   struct instruction *instruction = (struct instruction *)malloc(sizeof(struct instruction));
-  instruction->operation = strtok(line, " ");
+  instruction->operation = strtok(tempstr, " ");
   char *operand = strtok(NULL, " ");
-  instruction->operand1 = strtok(operand, " ");
+  instruction->operand1 = strtok(operand, ",");
   instruction->operand2 = strtok(NULL, " ");
+  printf("line after) %s\n", line);
+  printf("instruction decompose: (inst) %s : (op1) %s : (op2) %s\n", instruction->operation, instruction->operand1, instruction->operand2);
+
   return instruction;
 }
 
@@ -178,18 +197,61 @@ void create_symbol_table(struct file *file)
   print_symbols_table();
 }
 
+byte find_symbol_address(char* symbol_name){
+  for (int i = 0; i < symbol_table_size; i++)
+  {
+    if (!strcmp(symbols_table[i].name, symbol_name))
+    {
+      struct symbol symbol = symbols_table[i];
+      return symbol.address;
+    }
+  } // bad because if you don't return anything
+}
+
 void compile(struct file *file)
 {
   int current_address = 0;
+  byte output;
+  byte output2;
+  printf("compiling\n");
   for (int i = 0; i < file->nbr_lines; i++)
   {
     char *current_line = file->lines[i];
+    printf("%s\n", file->lines[i]);
     if (!is_empty_line(current_line) && !is_symbol(current_line))
     {
       struct instruction *instruction = from_line_to_instruction(current_line);
       struct instruction_ref instruction_ref = find_instruction_ref(instruction->operation);
-      if (!strcmp(instruct_ref.operand_type, "REGS")){
 
+      if (!strcmp(instruction_ref.operand_type, "RA_RB")){
+        byte ra = find_register_ref_translation(instruction->operand1);
+        byte rb = find_register_ref_translation(instruction->operand2);
+        printf("output %s\n", instruction_ref.value);
+        output = instruction_ref.value & (ra << 2)  & rb;
+        printf("output %d\n", output);
+      }
+
+      if (!strcmp(instruction_ref.operand_type, "RB")){
+        byte rb = find_register_ref_translation(instruction->operand1);
+        output = instruction_ref.value & rb;
+      }
+
+      if (!strcmp(instruction_ref.operand_type, "RB_VAL")){
+        byte rb = find_register_ref_translation(instruction->operand1);
+        output = instruction_ref.value & rb;
+        output2 = 3;
+        //use strtoll 
+        //output2 = instruction->operand2;
+      }
+
+      if (!strcmp(instruction_ref.operand_type, "ADDR")){
+        output = instruction_ref.value;
+        byte addr = find_symbol_address(instruction->operand2);
+        byte output2 = addr;
+      }
+
+      if (!strcmp(instruction_ref.operand_type, "NO")){
+        output = instruction_ref.value;
       }
     }
   }
@@ -207,33 +269,33 @@ void compile(struct file *file)
 // bad because if you don't return anything
 //}
 
-void compile(struct file *file)
-{
-  for (int i = 0; i < file->nbr_lines; i++)
-  {
-    if (!is_symbol(file->lines[i]))
-    {
-      char *operation = get_instruction_from_line(file->lines[i]);
-      struct instruction instr = find_instruction(operation);
-      if (!strcmp(instr.operand_type, "REGS"))
-      {
-        //char * op1= strtok(operand,",");
-        struct reg rega = find_reg(op1);
-        char *op2 = strtok(NULL, ",");
-        printf("op2 %s: \n", op2);
-        struct reg regb = find_reg(op2);
-        byte out = instr.value << 4;
-        printf("instr found %i: \n", out);
-        out = out | (rega.value << 2);
-        printf("rega found %i: \n", rega.value << 2);
-        out = out | (regb.value);
-        printf("regb found %i: \n", regb.value);
-        printf("%s: ", file->lines[i]);
-        printf(" -> %i\n", out);
-      }
-    }
-  }
-}
+// void compile(struct file *file)
+// {
+//   for (int i = 0; i < file->nbr_lines; i++)
+//   {
+//     if (!is_symbol(file->lines[i]))
+//     {
+//       char *operation = get_instruction_from_line(file->lines[i]);
+//       struct instruction instr = find_instruction(operation);
+//       if (!strcmp(instr.operand_type, "REGS"))
+//       {
+//         char * op1= strtok(operand,",");
+//         struct reg rega = find_reg(op1);
+//         char *op2 = strtok(NULL, ",");
+//         printf("op2 %s: \n", op2);
+//         struct reg regb = find_reg(op2);
+//         byte out = instr.value << 4;
+//         printf("instr found %i: \n", out);
+//         out = out | (rega.value << 2);
+//         printf("rega found %i: \n", rega.value << 2);
+//         out = out | (regb.value);
+//         printf("regb found %i: \n", regb.value);
+//         printf("%s: ", file->lines[i]);
+//         printf(" -> %i\n", out);
+//       }
+//     }
+//   }
+// }
 
 void display_file(struct file *file)
 {
@@ -287,6 +349,7 @@ int main(int argc, char *argv[])
   struct file *file = load_file("test_asm.asm");
   //display_file(file);
   create_symbol_table(file);
+  compile(file);
   //compile(file);
   //display_symbol_table();
   //write_to_file();
