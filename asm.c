@@ -117,7 +117,6 @@ struct instruction_ref find_instruction_ref(char *operation)
   } // bad because if you don't return anything
 }
 int find_register_ref_translation(char* name){
-  printf("trying to find register %s\n",name);
   int reg_table_size = sizeof(registers_ref_table) / sizeof(struct register_ref);
   for (int i = 0; i < reg_table_size; i++)
   {
@@ -134,14 +133,20 @@ void print_symbols_table()
   printf("symbol table\n");
   for (int i = 0; i < symbol_table_size; i++)
   {
-    printf("%s: %d\n", ((struct symbol)symbols_table[i]).name, ((struct symbol)symbols_table[i]).address);
+    printf("%s %d\n", ((struct symbol)symbols_table[i]).name, ((struct symbol)symbols_table[i]).address);
   }
 }
 
 void add_to_symbols_table(char *line, int current_address)
 {
+  char* symbol_line;
   struct symbol *symbol = (struct symbol *)malloc(sizeof(struct symbol));
-  symbol->name = line; //remove :
+  // size_t destination_size = sizeof(line);
+  symbol_line = strcpy(symbol_line, line);
+  //problem here: copy line to symbol_line and remove : of symbol line  without modifying line 
+  // symbol_line[strlen(symbol_line)-1] = '\0';
+  printf("new line %s",line);
+  symbol->name = symbol_line; //remove :
   symbol->address = current_address;
   symbols_table = (struct symbol *)realloc(symbols_table, (symbol_table_size + 1) * sizeof(struct symbol));
   symbols_table[symbol_table_size] = *symbol;
@@ -156,7 +161,6 @@ void add_to_output_file(byte b){
 
 struct instruction *from_line_to_instruction(char *line)
 {
-  printf("line before) %s\n", line);
   char* tempstr = calloc(strlen(line)+1, sizeof(char));
   strcpy(tempstr, line);
   struct instruction *instruction = (struct instruction *)malloc(sizeof(struct instruction));
@@ -164,9 +168,6 @@ struct instruction *from_line_to_instruction(char *line)
   char *operand = strtok(NULL, " ");
   instruction->operand1 = strtok(operand, ",");
   instruction->operand2 = strtok(NULL, " ");
-  printf("line after) %s\n", line);
-  printf("instruction decompose: (inst) %s : (op1) %s : (op2) %s\n", instruction->operation, instruction->operand1, instruction->operand2);
-
   return instruction;
 }
 
@@ -185,17 +186,14 @@ void create_symbol_table(struct file *file)
   for (int i = 0; i < file->nbr_lines; i++)
   {
     char *current_line = file->lines[i];
-    printf("%s", file->lines[i]);
     if (!is_empty_line(current_line))
     {
       if (is_symbol(current_line))
       {
-        printf(" : symbol line\n");
         add_to_symbols_table(current_line, current_address);
       }
       else
       {
-        printf(": instruction line \n");
         struct instruction *instruction = from_line_to_instruction(current_line);
         struct instruction_ref instruction_ref = find_instruction_ref(instruction->operation);
         current_address += instruction_ref.length;
@@ -219,11 +217,10 @@ byte find_symbol_address(char* symbol_name){
 void compile(struct file *file)
 {
   int current_address = 0;
-  printf("compiling\n");
   for (int i = 0; i < file->nbr_lines; i++)
   {
     char *current_line = file->lines[i];
-    printf("%s\n", file->lines[i]);
+    printf("current line %s\n",current_line);
     if (!is_empty_line(current_line) && !is_symbol(current_line))
     {
       struct instruction *instruction = from_line_to_instruction(current_line);
@@ -232,34 +229,30 @@ void compile(struct file *file)
       if (!strcmp(instruction_ref.operand_type, "RA_RB")){
         byte ra = find_register_ref_translation(instruction->operand1);
         byte rb = find_register_ref_translation(instruction->operand2);
-        printf("ins name %s and value %d\n", instruction_ref.operation, instruction_ref.value);
-        printf("ra %d ", ra);
-        printf("rb %d ", rb);
         byte ins_code = instruction_ref.value | (ra << 2)  | rb;
         add_to_output_file(ins_code);
-        printf("output %d\n", ins_code);
       }
 
       if (!strcmp(instruction_ref.operand_type, "RB")){
         byte rb = find_register_ref_translation(instruction->operand1);
-        byte ins_code = instruction_ref.value & rb;
+        byte ins_code = instruction_ref.value | rb;
         add_to_output_file(ins_code);
-        printf("ins_code %d\n", ins_code);
       }
 
       if (!strcmp(instruction_ref.operand_type, "RB_VAL")){
         byte rb = find_register_ref_translation(instruction->operand1);
         byte ins_code = instruction_ref.value | rb;
-        printf("rb val output %d\n", rb);
         add_to_output_file(ins_code);
         byte data = (byte) strtol(instruction->operand2, NULL, 10);
         add_to_output_file(data);
       }
 
       if (!strcmp(instruction_ref.operand_type, "ADDR")){
-        byte output = instruction_ref.value;
-        byte addr = find_symbol_address(instruction->operand2);
-        byte output2 = addr;
+        byte ins_code = instruction_ref.value;
+        byte addr = find_symbol_address(instruction->operand1);
+        // printf("inside addr %d : %d\n",ins_code,addr);
+        add_to_output_file(ins_code);
+        add_to_output_file(addr);
       }
 
       if (!strcmp(instruction_ref.operand_type, "NO")){
@@ -356,11 +349,11 @@ struct file *load_file(char *filename)
 int main(int argc, char *argv[])
 {
   symbols_table = (struct symbol *)malloc(0);
-  // if (argv[1] == NULL){
-  //   printf("please enter a assembly file\n");
-  //   exit(1);
-  // }
-  struct file *file = load_file("test_asm.asm");
+  if (argv[1] == NULL){
+    printf("please enter a assembly file\n");
+    exit(1);
+  }
+  struct file *file = load_file(argv[1]);
   //display_file(file);
   create_symbol_table(file);
   compile(file);
