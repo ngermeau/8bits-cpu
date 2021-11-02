@@ -82,13 +82,15 @@ struct symbol
 
 struct symbol *symbols_table;
 int symbol_table_size = 0;
+byte* output_file;
+int output_file_size;
 
 void write_to_file()
 {
-  FILE *fp = fopen("compiled.out", "w");
-  for (int i = 0; i < 10; i++)
+  FILE *fp = fopen("compiled.bin", "w");
+  for (int i = 0; i < output_file_size; i++)
   {
-    fputc(i, fp);
+    fputc(output_file[i], fp);
   }
   fclose(fp);
 }
@@ -144,6 +146,12 @@ void add_to_symbols_table(char *line, int current_address)
   symbols_table = (struct symbol *)realloc(symbols_table, (symbol_table_size + 1) * sizeof(struct symbol));
   symbols_table[symbol_table_size] = *symbol;
   symbol_table_size++;
+}
+
+void add_to_output_file(byte b){
+  output_file = (byte*) realloc(output_file, (output_file_size + 1) * sizeof(byte));
+  output_file[output_file_size] = b;
+  output_file_size++;
 }
 
 struct instruction *from_line_to_instruction(char *line)
@@ -211,8 +219,6 @@ byte find_symbol_address(char* symbol_name){
 void compile(struct file *file)
 {
   int current_address = 0;
-  byte output;
-  byte output2;
   printf("compiling\n");
   for (int i = 0; i < file->nbr_lines; i++)
   {
@@ -226,36 +232,44 @@ void compile(struct file *file)
       if (!strcmp(instruction_ref.operand_type, "RA_RB")){
         byte ra = find_register_ref_translation(instruction->operand1);
         byte rb = find_register_ref_translation(instruction->operand2);
-        printf("output %s\n", instruction_ref.value);
-        output = instruction_ref.value & (ra << 2)  & rb;
-        printf("output %d\n", output);
+        printf("ins name %s and value %d\n", instruction_ref.operation, instruction_ref.value);
+        printf("ra %d ", ra);
+        printf("rb %d ", rb);
+        byte ins_code = instruction_ref.value | (ra << 2)  | rb;
+        add_to_output_file(ins_code);
+        printf("output %d\n", ins_code);
       }
 
       if (!strcmp(instruction_ref.operand_type, "RB")){
         byte rb = find_register_ref_translation(instruction->operand1);
-        output = instruction_ref.value & rb;
+        byte ins_code = instruction_ref.value & rb;
+        add_to_output_file(ins_code);
+        printf("ins_code %d\n", ins_code);
       }
 
       if (!strcmp(instruction_ref.operand_type, "RB_VAL")){
         byte rb = find_register_ref_translation(instruction->operand1);
-        output = instruction_ref.value & rb;
-        output2 = 3;
-        //use strtoll 
-        //output2 = instruction->operand2;
+        byte ins_code = instruction_ref.value | rb;
+        printf("rb val output %d\n", rb);
+        add_to_output_file(ins_code);
+        byte data = (byte) strtol(instruction->operand2, NULL, 10);
+        add_to_output_file(data);
       }
 
       if (!strcmp(instruction_ref.operand_type, "ADDR")){
-        output = instruction_ref.value;
+        byte output = instruction_ref.value;
         byte addr = find_symbol_address(instruction->operand2);
         byte output2 = addr;
       }
 
       if (!strcmp(instruction_ref.operand_type, "NO")){
-        output = instruction_ref.value;
+        byte output = instruction_ref.value;
       }
     }
   }
+  write_to_file();
 }
+
 //struct reg find_reg(char* reg){
 //  int reg_size = sizeof(regs) / sizeof(struct reg);
 // for (int i = 0; i< reg_size ; i++){
