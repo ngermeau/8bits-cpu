@@ -1,10 +1,15 @@
-# Minimalistic And Naive 8 Bit CPU Simulator 
+# Minimalistic And Naive 8 Bit CPU Simulator And Assembler
 
 
 # Todo
 
 - [ ] write a correct readme (supported instructions etc...)    
-- [ ] write your own assembly compiler   
+- [ ] change asm program to include symbol
+- [ ] refactor for more clarity of code 
+- [ ] asm output filename = entry output filename 
+- [ ] asm allow multiple file as parameters 
+- [ ] remove global var  
+- [x] write your own assembly compiler   
 - [x] let a program be passed in parameter   
 - [x] add quick expanation for next cycle or exit 
 - [x] take carry flag as input for add, shr, shl    
@@ -18,7 +23,6 @@
 - [x] verify not_and_or_xor    
 - [x] create make file 
 - [x] write fibonnaci   
-- [ ] support lower/uppercase in asm file
 
 
 # Demo programs

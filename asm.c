@@ -139,14 +139,12 @@ void print_symbols_table()
 
 void add_to_symbols_table(char *line, int current_address)
 {
-  char* symbol_line;
-  struct symbol *symbol = (struct symbol *)malloc(sizeof(struct symbol));
-  // size_t destination_size = sizeof(line);
+  char* symbol_line = malloc(strlen(line));
   symbol_line = strcpy(symbol_line, line);
-  //problem here: copy line to symbol_line and remove : of symbol line  without modifying line 
-  // symbol_line[strlen(symbol_line)-1] = '\0';
-  printf("new line %s",line);
-  symbol->name = symbol_line; //remove :
+  symbol_line[strlen(symbol_line)-1] = '\0';
+
+  struct symbol *symbol = (struct symbol *)malloc(sizeof(struct symbol));
+  symbol->name = symbol_line; 
   symbol->address = current_address;
   symbols_table = (struct symbol *)realloc(symbols_table, (symbol_table_size + 1) * sizeof(struct symbol));
   symbols_table[symbol_table_size] = *symbol;
@@ -200,7 +198,6 @@ void create_symbol_table(struct file *file)
       }
     }
   }
-  print_symbols_table();
 }
 
 byte find_symbol_address(char* symbol_name){
@@ -220,7 +217,6 @@ void compile(struct file *file)
   for (int i = 0; i < file->nbr_lines; i++)
   {
     char *current_line = file->lines[i];
-    printf("current line %s\n",current_line);
     if (!is_empty_line(current_line) && !is_symbol(current_line))
     {
       struct instruction *instruction = from_line_to_instruction(current_line);
@@ -250,67 +246,19 @@ void compile(struct file *file)
       if (!strcmp(instruction_ref.operand_type, "ADDR")){
         byte ins_code = instruction_ref.value;
         byte addr = find_symbol_address(instruction->operand1);
-        // printf("inside addr %d : %d\n",ins_code,addr);
         add_to_output_file(ins_code);
         add_to_output_file(addr);
       }
 
       if (!strcmp(instruction_ref.operand_type, "NO")){
-        byte output = instruction_ref.value;
+        byte ins_code = instruction_ref.value;
+        add_to_output_file(ins_code);
       }
     }
   }
   write_to_file();
 }
 
-//struct reg find_reg(char* reg){
-//  int reg_size = sizeof(regs) / sizeof(struct reg);
-// for (int i = 0; i< reg_size ; i++){
-//     printf("try found reg %s: \n",reg);
-//  if (!strcmp(regs[i].name,reg)){
-//   printf("found reg %s: \n",regs[i].name);
-//  printf("reg value %i: \n",regs[i].value);
-// return regs[i];
-//}
-//}
-// bad because if you don't return anything
-//}
-
-// void compile(struct file *file)
-// {
-//   for (int i = 0; i < file->nbr_lines; i++)
-//   {
-//     if (!is_symbol(file->lines[i]))
-//     {
-//       char *operation = get_instruction_from_line(file->lines[i]);
-//       struct instruction instr = find_instruction(operation);
-//       if (!strcmp(instr.operand_type, "REGS"))
-//       {
-//         char * op1= strtok(operand,",");
-//         struct reg rega = find_reg(op1);
-//         char *op2 = strtok(NULL, ",");
-//         printf("op2 %s: \n", op2);
-//         struct reg regb = find_reg(op2);
-//         byte out = instr.value << 4;
-//         printf("instr found %i: \n", out);
-//         out = out | (rega.value << 2);
-//         printf("rega found %i: \n", rega.value << 2);
-//         out = out | (regb.value);
-//         printf("regb found %i: \n", regb.value);
-//         printf("%s: ", file->lines[i]);
-//         printf(" -> %i\n", out);
-//       }
-//     }
-//   }
-// }
-
-void display_file(struct file *file)
-{
-  for (int i = 0; i < file->nbr_lines; i++)
-  {
-    printf("%s", file->lines[i]);
-  }
-}
 
 int size_of_file(FILE *fileptr)
 {
@@ -353,11 +301,7 @@ int main(int argc, char *argv[])
     printf("please enter a assembly file\n");
     exit(1);
   }
-  struct file *file = load_file(argv[1]);
-  //display_file(file);
+  struct file *file = load_file("fibonnaci.");
   create_symbol_table(file);
   compile(file);
-  //compile(file);
-  //display_symbol_table();
-  //write_to_file();
 }
