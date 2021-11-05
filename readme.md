@@ -9,6 +9,7 @@
 - [ ] asm output filename = entry output filename 
 - [ ] asm allow multiple file as parameters 
 - [ ] remove global var  
+- [ ] remove empty lines check everywhere and put it during loading of file
 - [x] write your own assembly compiler   
 - [x] let a program be passed in parameter   
 - [x] add quick expanation for next cycle or exit 
