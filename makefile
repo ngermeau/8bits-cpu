@@ -1,4 +1,4 @@
 CC=gcc
 
 build:
-	$(CC) -o computer.out computer.c -lncurses
+	$(CC) -Werror -o computer.out computer.c -lncurses

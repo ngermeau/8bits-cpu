@@ -17,11 +17,10 @@ struct instruction_ref
 {
   char *operation;
   int length;
-  byte value;
+  byte code;
   char *operand_type;
 };
 
-//enum operation {load,store,data,jumpr,jump,jumpc,clf,nop,add,shl,shr,not,and,or,xor,cmp};
 struct instruction_ref instructions_ref_table[] = {
     {"ld",    1, 0x00, "RA_RB"},    
     {"st",    1, 0x10, "RA_RB"},    
@@ -57,7 +56,7 @@ struct instruction_ref instructions_ref_table[] = {
 struct register_ref
 {
   char *name;
-  byte value;
+  byte code;
 };
 
 struct register_ref registers_ref_table[] = {
@@ -82,8 +81,43 @@ struct symbol
 
 struct symbol *symbols_table;
 int symbol_table_size = 0;
+
 byte* output_file;
 int output_file_size;
+
+int size_of_file(FILE *fileptr)
+{
+  int filelen = 0;
+  char line[64];
+  while (fgets(line, sizeof(line), fileptr))
+  {
+    filelen += 1;
+  }
+  rewind(fileptr); //bad sideeffect, should save the ptr place before
+  return filelen;
+}
+
+struct file *load_file(char *filename)
+{
+  FILE *fileptr = fopen(filename, "rb");
+  int filelen = size_of_file(fileptr);
+
+  struct file *file = malloc(sizeof(struct file));
+  file->nbr_lines = filelen;
+
+  file->lines = (char **)calloc(filelen, sizeof(char *));
+  for (int i = 0; i < filelen; i++)
+  {
+    file->lines[i] = (char *)calloc(LINE_LENGTH, sizeof(char));
+    fgets(file->lines[i], LINE_LENGTH, fileptr);
+    int len = strlen(file->lines[i]);
+    if (file->lines[i][len - 1] == '\n')
+      file->lines[i][len - 1] = 0;
+  }
+
+  fclose(fileptr);
+  return file;
+}
 
 void write_to_file()
 {
@@ -116,14 +150,15 @@ struct instruction_ref find_instruction_ref(char *operation)
     }
   } // bad because if you don't return anything
 }
-int find_register_ref_translation(char* name){
+
+struct register_ref find_register_ref(char* name){
   int reg_table_size = sizeof(registers_ref_table) / sizeof(struct register_ref);
   for (int i = 0; i < reg_table_size; i++)
   {
     if (!strcmp(registers_ref_table[i].name, name))
     {
       struct register_ref register_ref = registers_ref_table[i];
-      return register_ref.value;
+      return register_ref;
     }
   } // bad because if you don't return anything
 }
@@ -223,35 +258,35 @@ void compile(struct file *file)
       struct instruction_ref instruction_ref = find_instruction_ref(instruction->operation);
 
       if (!strcmp(instruction_ref.operand_type, "RA_RB")){
-        byte ra = find_register_ref_translation(instruction->operand1);
-        byte rb = find_register_ref_translation(instruction->operand2);
-        byte ins_code = instruction_ref.value | (ra << 2)  | rb;
+        byte ra = find_register_ref(instruction->operand1).code;
+        byte rb = find_register_ref(instruction->operand2).code;
+        byte ins_code = instruction_ref.code | (ra << 2)  | rb;
         add_to_output_file(ins_code);
       }
 
       if (!strcmp(instruction_ref.operand_type, "RB")){
-        byte rb = find_register_ref_translation(instruction->operand1);
-        byte ins_code = instruction_ref.value | rb;
+        byte rb = find_register_ref(instruction->operand1).code;
+        byte ins_code = instruction_ref.code | rb;
         add_to_output_file(ins_code);
       }
 
       if (!strcmp(instruction_ref.operand_type, "RB_VAL")){
-        byte rb = find_register_ref_translation(instruction->operand1);
-        byte ins_code = instruction_ref.value | rb;
+        byte rb = find_register_ref(instruction->operand1).code;
+        byte ins_code = instruction_ref.code | rb;
         add_to_output_file(ins_code);
         byte data = (byte) strtol(instruction->operand2, NULL, 10);
         add_to_output_file(data);
       }
 
       if (!strcmp(instruction_ref.operand_type, "ADDR")){
-        byte ins_code = instruction_ref.value;
+        byte ins_code = instruction_ref.code;
         byte addr = find_symbol_address(instruction->operand1);
         add_to_output_file(ins_code);
         add_to_output_file(addr);
       }
 
       if (!strcmp(instruction_ref.operand_type, "NO")){
-        byte ins_code = instruction_ref.value;
+        byte ins_code = instruction_ref.code;
         add_to_output_file(ins_code);
       }
     }
@@ -260,39 +295,7 @@ void compile(struct file *file)
 }
 
 
-int size_of_file(FILE *fileptr)
-{
-  int filelen = 0;
-  char line[64];
-  while (fgets(line, sizeof(line), fileptr))
-  {
-    filelen += 1;
-  }
-  rewind(fileptr); //bad sideeffect, should save the ptr place before
-  return filelen;
-}
 
-struct file *load_file(char *filename)
-{
-  FILE *fileptr = fopen(filename, "rb");
-  int filelen = size_of_file(fileptr);
-
-  struct file *file = malloc(sizeof(struct file));
-  file->nbr_lines = filelen;
-
-  file->lines = (char **)calloc(filelen, sizeof(char *));
-  for (int i = 0; i < filelen; i++)
-  {
-    file->lines[i] = (char *)calloc(LINE_LENGTH, sizeof(char));
-    fgets(file->lines[i], LINE_LENGTH, fileptr);
-    int len = strlen(file->lines[i]);
-    if (file->lines[i][len - 1] == '\n')
-      file->lines[i][len - 1] = 0;
-  }
-
-  fclose(fileptr);
-  return file;
-}
 
 int main(int argc, char *argv[])
 {
