@@ -7,7 +7,7 @@
 #define LINE_LENGTH 64
 typedef __uint8_t byte;
 
-struct file
+struct parsed_file
 {
   int nbr_lines;
   char **lines;
@@ -79,6 +79,10 @@ struct symbol
   int address;
 };
 
+struct symbols_table {
+  int symbols_table_size;
+  struct symbol* symbols;
+};
 
 byte* output_file;
 int output_file_size;
@@ -95,30 +99,31 @@ int size_of_file(FILE *fileptr)
   return filelen;
 }
 
-struct file *load_file(char *filename)
+struct parsed_file *load_file(char *filename)
 {
   FILE *fileptr = fopen(filename, "rb");
   int filelen = size_of_file(fileptr);
+  struct parsed_file *parsed_file = malloc(sizeof(struct parsed_file));
 
-  struct file *file = malloc(sizeof(struct file));
-  file->nbr_lines = filelen;
-
-  file->lines = (char **)calloc(filelen, sizeof(char *));
-  for (int i = 0; i < filelen; i++)
+  parsed_file->lines = (char **)calloc(filelen, sizeof(char *));
+  int line_counter = 0;
+  for (int i = 0; i < filelen;i++)
   {
-    char *current_line = (char *)calloc(LINE_LENGTH, sizeof(char));
-    fgets(current_line, LINE_LENGTH, fileptr);
-    if (!(*current_line == '\n')){ //don't count empty lines
-      file->lines[i] = current_line;
-      int len = strlen(file->lines[i]);
-      if (file->lines[i][len - 1] == '\n'){
-        file->lines[i][len - 1] = 0;
+    char *line = (char *)calloc(LINE_LENGTH, sizeof(char));
+    fgets(line, LINE_LENGTH, fileptr);
+    if (!(*line == '\n')){ 
+      printf("current_line : %s \n",line);
+      parsed_file->lines[line_counter] = line;
+      int len = strlen(parsed_file->lines[line_counter]);
+      if (parsed_file->lines[line_counter][len - 1] == '\n'){
+        parsed_file->lines[line_counter][len - 1] = 0;
       }
+      line_counter++;
     }
   }
-
+  parsed_file->nbr_lines = line_counter;
   fclose(fileptr);
-  return file;
+  return parsed_file;
 }
 
 void write_to_file()
@@ -165,15 +170,21 @@ struct register_ref find_register_ref(char* name){
   } // bad because if you don't return anything
 }
 
-void print_symbols_table(struct symbol* symbols_table, int symbols_table_size)
+void print_symbols_table(struct symbols_table* symbols_table)
 {
   printf("symbol table\n");
-  for (int i = 0; i < symbols_table_size; i++)
+  for (int i = 0; i < symbols_table->symbols_table_size; i++)
   {
-    printf("%s %d\n", ((struct symbol)symbols_table[i]).name, ((struct symbol)symbols_table[i]).address);
+    printf("%s %d\n", ((struct symbol)symbols_table->symbols[i]).name, ((struct symbol)symbols_table->symbols[i]).address);
   }
 }
 
+void print_file(char** lines){
+  for (int i = 0; i < 10; i++)
+  {
+    printf("%s \n ",lines[i]);
+  }
+}
 
 void add_to_output_file(byte b){
   output_file = (byte*) realloc(output_file, (output_file_size + 1) * sizeof(byte));
@@ -202,15 +213,19 @@ bool is_empty_line(char *line)
   return false;
 }
 
-void create_symbol_table(struct file *file, struct symbol* symbols_table, int symbols_table_size)
+struct symbols_table* create_symbol_table(struct parsed_file *parsed_file)
 {
+  struct symbols_table* symbols_table = (struct symbols_table*) malloc(sizeof(struct symbols_table));
+  symbols_table->symbols = (struct symbol*) malloc(0);
+  symbols_table->symbols_table_size = 0;
   int current_address = 0;
-  for (int i = 0; i < file->nbr_lines; i++)
+
+  for (int i = 0; i < parsed_file->nbr_lines; i++)
   {
-    char *current_line = file->lines[i];
-    printf("current line: ")
+    char *current_line = parsed_file->lines[i];
     if (is_symbol(current_line))
     {
+      printf("current line symbol: %s\n", current_line);
       char* symbol_line = malloc(strlen(current_line));
       symbol_line = strcpy(symbol_line, current_line);
       symbol_line[strlen(symbol_line)-1] = '\0';
@@ -218,9 +233,10 @@ void create_symbol_table(struct file *file, struct symbol* symbols_table, int sy
       struct symbol *symbol = (struct symbol *)malloc(sizeof(struct symbol));
       symbol->name = symbol_line; 
       symbol->address = current_address;
-      symbols_table = (struct symbol *)realloc(symbols_table, (symbols_table_size + 1) * sizeof(struct symbol));
-      symbols_table[symbols_table_size] = *symbol;
-      symbols_table_size++;
+
+      struct symbol* symbols = (struct symbol *)realloc(symbols_table->symbols, (symbols_table->symbols_table_size + 1) * sizeof(struct symbol));
+      symbols_table->symbols[symbols_table->symbols_table_size] = *symbol; 
+      symbols_table->symbols_table_size++;
     }
     else
     {
@@ -229,9 +245,10 @@ void create_symbol_table(struct file *file, struct symbol* symbols_table, int sy
       current_address += instruction_ref.length;
     }
   }
+  return symbols_table;
 }
 
-void compile(struct file *file, struct symbol* symbols_table, int symbols_table_size)
+void compile(struct parsed_file *file, struct symbols_table* symbols_table)
 {
   int current_address = 0;
   for (int i = 0; i < file->nbr_lines; i++)
@@ -266,11 +283,11 @@ void compile(struct file *file, struct symbol* symbols_table, int symbols_table_
       if(!strcmp(instruction_ref.operand_type, "ADDR")){
         byte ins_code = instruction_ref.code;
         byte addr;
-        for (int i = 0; i < symbols_table_size; i++)
+        for (int i = 0; i < symbols_table->symbols_table_size; i++)
         {
-          if (!strcmp(symbols_table[i].name, instruction->operand1))
+          if (!strcmp(symbols_table->symbols[i].name, instruction->operand1))
           {
-            addr = symbols_table[i].address;
+            addr = symbols_table->symbols[i].address;
           }
         } 
         add_to_output_file(ins_code);
@@ -291,13 +308,14 @@ void compile(struct file *file, struct symbol* symbols_table, int symbols_table_
 
 int main(int argc, char *argv[])
 {
-  int symbol_table_size = 0;
-  struct symbol* symbols_table = (struct symbol *)malloc(0);
+  int symbols_table_size = 0;
   // if (argv[1] == NULL){
   //   printf("please enter a assembly file\n");
   //   exit(1);
   // }
-  struct file *file = load_file("fibonnaci.asm");
-  create_symbol_table(file,symbols_table, symbol_table_size);
-  compile(file,symbols_table,symbol_table_size);
+  struct parsed_file *parsed_file = load_file("fibonnaci.asm");
+  print_file(parsed_file->lines);
+  struct symbols_table* symbols_table = create_symbol_table(parsed_file);
+  print_symbols_table(symbols_table);
+  compile(parsed_file,symbols_table);
 }

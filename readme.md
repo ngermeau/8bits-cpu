@@ -10,6 +10,7 @@
 - [ ] asm allow multiple file as parameters 
 - [ ] remove global var  
 - [ ] remove empty lines check everywhere and put it during loading of file
+- [ ] seriously loading file sucks, better way of doing this 
 - [x] write your own assembly compiler   
 - [x] let a program be passed in parameter   
 - [x] add quick expanation for next cycle or exit 
