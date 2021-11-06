@@ -7,7 +7,7 @@ Made for fun, c learning, computer learning.
 # Usage 
 
 ```
-    $ make 
+    $ make                              # build  
     $ ./asm.bin fibonnaci.asm           # compile fibonnaci.asm
     $ ./computer.bin fibonnaci.bin      # run fibonnaci program in 8 bits computer
 
