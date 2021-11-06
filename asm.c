@@ -119,7 +119,6 @@ struct parsed_file *parse_file(char *filename)
     fgets(line, LINE_LENGTH, fileptr);
     if (!(*line == '\n'))
     {
-      printf("current_line : %s \n", line);
       p_file->lines[line_counter] = line;
       int len = strlen(p_file->lines[line_counter]);
       if (p_file->lines[line_counter][len - 1] == '\n')
@@ -134,9 +133,9 @@ struct parsed_file *parse_file(char *filename)
   return p_file;
 }
 
-void write_to_file(struct compiled_file *c_file)
+void write_file(const char *o_filename, struct compiled_file *c_file)
 {
-  FILE *fp = fopen("compiled.bin", "w");
+  FILE *fp = fopen(o_filename, "w");
   for (int i = 0; i < c_file->size; i++)
   {
     fputc(c_file->bytes[i], fp);
@@ -163,7 +162,7 @@ struct instruction_ref find_instruction_ref(char *operation)
       struct instruction_ref instruction_ref = instructions_ref_table[i];
       return instruction_ref;
     }
-  } // bad because if you don't return anything
+  } // error management if no inst found 
 }
 
 struct register_ref find_register_ref(char *name)
@@ -176,24 +175,7 @@ struct register_ref find_register_ref(char *name)
       struct register_ref register_ref = registers_ref_table[i];
       return register_ref;
     }
-  } // bad because if you don't return anything
-}
-
-void print_symbols_table(struct symbols_table *symbols_table)
-{
-  printf("symbol table\n");
-  for (int i = 0; i < symbols_table->size; i++)
-  {
-    printf("%s %d\n", ((struct symbol)symbols_table->symbols[i]).name, ((struct symbol)symbols_table->symbols[i]).address);
-  }
-}
-
-void print_file(char **lines)
-{
-  for (int i = 0; i < 10; i++)
-  {
-    printf("%s \n ", lines[i]);
-  }
+  }  //error management if no reg found 
 }
 
 struct instruction *from_line_to_instruction(char *line)
@@ -314,16 +296,26 @@ struct compiled_file *compile(struct parsed_file *p_file, struct symbols_table *
   return c_file;
 }
 
+char *get_output_file_name(const char *i_filename)
+{
+  char *o_filename;
+  o_filename = malloc(strlen(i_filename) + 5); // +5 in case no .asm
+  strcpy(o_filename, i_filename);
+  return strcat(strtok(o_filename, "."), ".bin");
+}
+
 int main(int argc, char *argv[])
 {
-  // if (argv[1] == NULL){
-  //   printf("please enter a assembly file\n");
-  //   exit(1);
-  // }
-  struct parsed_file *p_file = parse_file("fibonnaci.asm");
-  print_file(p_file->lines);
+  if (argv[1] == NULL)
+  {
+    printf("please enter a assembly file\n");
+    exit(1);
+  }
+
+  struct parsed_file *p_file = parse_file(argv[1]);
   struct symbols_table *syms_table = create_symbol_table(p_file);
-  print_symbols_table(syms_table);
   struct compiled_file *c_file = compile(p_file, syms_table);
-  write_to_file(c_file);
+  char *o_filename = get_output_file_name(argv[1]);
+  write_file(o_filename, c_file);
+  printf("successfully compiled in %s\n",o_filename);
 }
