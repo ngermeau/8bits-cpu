@@ -3,14 +3,13 @@
 
 # Todo
 
-- [ ] write a correct readme (supported instructions etc...)    
 - [ ] change asm program to include symbol
 - [ ] refactor for more clarity of code 
 - [ ] asm output filename = entry output filename 
-- [ ] asm allow multiple file as parameters 
 - [ ] remove global var  
-- [ ] remove empty lines check everywhere and put it during loading of file
+- [x] remove empty lines check everywhere and put it during loading of file
 - [ ] seriously loading file sucks, better way of doing this 
+- [ ] use typedef for struct 
 - [x] write your own assembly compiler   
 - [x] let a program be passed in parameter   
 - [x] add quick expanation for next cycle or exit 
@@ -25,6 +24,7 @@
 - [x] verify not_and_or_xor    
 - [x] create make file 
 - [x] write fibonnaci   
+- [ ] write a correct readme (supported instructions etc...)    
 
 
 # Demo programs

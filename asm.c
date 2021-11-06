@@ -13,6 +13,12 @@ struct parsed_file
   char **lines;
 };
 
+struct compiled_file
+{
+  int size;
+  byte *bytes;
+};
+
 struct instruction_ref
 {
   char *operation;
@@ -22,36 +28,36 @@ struct instruction_ref
 };
 
 struct instruction_ref instructions_ref_table[] = {
-    {"ld",    1, 0x00, "RA_RB"},    
-    {"st",    1, 0x10, "RA_RB"},    
-    {"data",  2, 0x20, "RB_VAL"},   
-    {"jmpr",  2, 0x30, "RB"},       
-    {"jmp",   2, 0x40, "ADDR"},     
-    {"jc",    2, 0x58, "ADDR"},  
-    {"ja",    2, 0x54, "ADDR"}, 
-    {"je",    2, 0x52, "ADDR"},
-    {"jz",    2, 0x51, "ADDR"},
-    {"jca",   2, 0x5c, "ADDR"},  
-    {"jce",   2, 0x5a, "ADDR"}, 
-    {"jcz",   2, 0x59, "ADDR"},
-    {"jae",   2, 0x56, "ADDR"},  
-    {"jaz",   2, 0x55, "ADDR"},  
-    {"jez",   2, 0x53, "ADDR"},  
-    {"jcae",  2, 0x5e, "ADDR"}, 
-    {"jcaz",  2, 0x5d, "ADDR"},  
-    {"jcez",  2, 0x5b, "ADDR"},  
-    {"jaez",  2, 0x57, "ADDR"},  
-    {"jcaez", 2, 0x5f, "ADDR"},  
-    {"clf",   2, 0x60, "NO"},
-    {"nop",   2, 0x70, "NO"},
-    {"add",   2, 0x80, "RA_RB"},
-    {"shl",   2, 0x90, "RA_RB"},
-    {"shr",   2, 0xa0, "RA_RB"},
-    {"not",   2, 0xb0, "RA_RB"},
-    {"and",   2, 0xc0, "RA_RB"},
-    {"or",    2, 0xd0, "RA_RB"},
-    {"xor",   2, 0xe0, "RA_RB"},
-    {"cmp",   2, 0xf0, "RA_RB"}};
+    {"ld", 1, 0x00, "RA_RB"},
+    {"st", 1, 0x10, "RA_RB"},
+    {"data", 2, 0x20, "RB_VAL"},
+    {"jmpr", 2, 0x30, "RB"},
+    {"jmp", 2, 0x40, "ADDR"},
+    {"jc", 2, 0x58, "ADDR"},
+    {"ja", 2, 0x54, "ADDR"},
+    {"je", 2, 0x52, "ADDR"},
+    {"jz", 2, 0x51, "ADDR"},
+    {"jca", 2, 0x5c, "ADDR"},
+    {"jce", 2, 0x5a, "ADDR"},
+    {"jcz", 2, 0x59, "ADDR"},
+    {"jae", 2, 0x56, "ADDR"},
+    {"jaz", 2, 0x55, "ADDR"},
+    {"jez", 2, 0x53, "ADDR"},
+    {"jcae", 2, 0x5e, "ADDR"},
+    {"jcaz", 2, 0x5d, "ADDR"},
+    {"jcez", 2, 0x5b, "ADDR"},
+    {"jaez", 2, 0x57, "ADDR"},
+    {"jcaez", 2, 0x5f, "ADDR"},
+    {"clf", 2, 0x60, "NO"},
+    {"nop", 2, 0x70, "NO"},
+    {"add", 2, 0x80, "RA_RB"},
+    {"shl", 2, 0x90, "RA_RB"},
+    {"shr", 2, 0xa0, "RA_RB"},
+    {"not", 2, 0xb0, "RA_RB"},
+    {"and", 2, 0xc0, "RA_RB"},
+    {"or", 2, 0xd0, "RA_RB"},
+    {"xor", 2, 0xe0, "RA_RB"},
+    {"cmp", 2, 0xf0, "RA_RB"}};
 
 struct register_ref
 {
@@ -79,13 +85,11 @@ struct symbol
   int address;
 };
 
-struct symbols_table {
-  int symbols_table_size;
-  struct symbol* symbols;
+struct symbols_table
+{
+  int size;
+  struct symbol *symbols;
 };
-
-byte* output_file;
-int output_file_size;
 
 int size_of_file(FILE *fileptr)
 {
@@ -99,39 +103,43 @@ int size_of_file(FILE *fileptr)
   return filelen;
 }
 
-struct parsed_file *load_file(char *filename)
+struct parsed_file *parse_file(char *filename)
 {
   FILE *fileptr = fopen(filename, "rb");
   int filelen = size_of_file(fileptr);
-  struct parsed_file *parsed_file = malloc(sizeof(struct parsed_file));
 
-  parsed_file->lines = (char **)calloc(filelen, sizeof(char *));
+  struct parsed_file *p_file = malloc(sizeof(struct parsed_file));
+  p_file->lines = (char **)calloc(filelen, sizeof(char *));
+  p_file->nbr_lines = 0;
+
   int line_counter = 0;
-  for (int i = 0; i < filelen;i++)
+  for (int i = 0; i < filelen; i++)
   {
     char *line = (char *)calloc(LINE_LENGTH, sizeof(char));
     fgets(line, LINE_LENGTH, fileptr);
-    if (!(*line == '\n')){ 
-      printf("current_line : %s \n",line);
-      parsed_file->lines[line_counter] = line;
-      int len = strlen(parsed_file->lines[line_counter]);
-      if (parsed_file->lines[line_counter][len - 1] == '\n'){
-        parsed_file->lines[line_counter][len - 1] = 0;
+    if (!(*line == '\n'))
+    {
+      printf("current_line : %s \n", line);
+      p_file->lines[line_counter] = line;
+      int len = strlen(p_file->lines[line_counter]);
+      if (p_file->lines[line_counter][len - 1] == '\n')
+      {
+        p_file->lines[line_counter][len - 1] = 0;
       }
       line_counter++;
     }
   }
-  parsed_file->nbr_lines = line_counter;
+  p_file->nbr_lines = line_counter;
   fclose(fileptr);
-  return parsed_file;
+  return p_file;
 }
 
-void write_to_file()
+void write_to_file(struct compiled_file *c_file)
 {
   FILE *fp = fopen("compiled.bin", "w");
-  for (int i = 0; i < output_file_size; i++)
+  for (int i = 0; i < c_file->size; i++)
   {
-    fputc(output_file[i], fp);
+    fputc(c_file->bytes[i], fp);
   }
   fclose(fp);
 }
@@ -158,7 +166,8 @@ struct instruction_ref find_instruction_ref(char *operation)
   } // bad because if you don't return anything
 }
 
-struct register_ref find_register_ref(char* name){
+struct register_ref find_register_ref(char *name)
+{
   int reg_table_size = sizeof(registers_ref_table) / sizeof(struct register_ref);
   for (int i = 0; i < reg_table_size; i++)
   {
@@ -170,33 +179,28 @@ struct register_ref find_register_ref(char* name){
   } // bad because if you don't return anything
 }
 
-void print_symbols_table(struct symbols_table* symbols_table)
+void print_symbols_table(struct symbols_table *symbols_table)
 {
   printf("symbol table\n");
-  for (int i = 0; i < symbols_table->symbols_table_size; i++)
+  for (int i = 0; i < symbols_table->size; i++)
   {
     printf("%s %d\n", ((struct symbol)symbols_table->symbols[i]).name, ((struct symbol)symbols_table->symbols[i]).address);
   }
 }
 
-void print_file(char** lines){
+void print_file(char **lines)
+{
   for (int i = 0; i < 10; i++)
   {
-    printf("%s \n ",lines[i]);
+    printf("%s \n ", lines[i]);
   }
-}
-
-void add_to_output_file(byte b){
-  output_file = (byte*) realloc(output_file, (output_file_size + 1) * sizeof(byte));
-  output_file[output_file_size] = b;
-  output_file_size++;
 }
 
 struct instruction *from_line_to_instruction(char *line)
 {
-  char* tempstr = calloc(strlen(line)+1, sizeof(char));
+  char *tempstr = calloc(strlen(line) + 1, sizeof(char));
   strcpy(tempstr, line);
-  struct instruction *instruction = (struct instruction *)malloc(sizeof(struct instruction));
+  struct instruction *instruction = malloc(sizeof(struct instruction));
   instruction->operation = strtok(tempstr, " ");
   char *operand = strtok(NULL, " ");
   instruction->operand1 = strtok(operand, ",");
@@ -204,118 +208,122 @@ struct instruction *from_line_to_instruction(char *line)
   return instruction;
 }
 
-bool is_empty_line(char *line)
+struct symbols_table *create_symbol_table(struct parsed_file *p_file)
 {
-  if (*line == '\0')
-  {
-    return true;
-  }
-  return false;
-}
-
-struct symbols_table* create_symbol_table(struct parsed_file *parsed_file)
-{
-  struct symbols_table* symbols_table = (struct symbols_table*) malloc(sizeof(struct symbols_table));
-  symbols_table->symbols = (struct symbol*) malloc(0);
-  symbols_table->symbols_table_size = 0;
+  struct symbols_table *sym_table = malloc(sizeof(struct symbols_table));
+  sym_table->symbols = malloc(0);
+  sym_table->size = 0;
   int current_address = 0;
 
-  for (int i = 0; i < parsed_file->nbr_lines; i++)
+  for (int i = 0; i < p_file->nbr_lines; i++)
   {
-    char *current_line = parsed_file->lines[i];
-    if (is_symbol(current_line))
+    char *cur_line = p_file->lines[i];
+    if (is_symbol(cur_line))
     {
-      printf("current line symbol: %s\n", current_line);
-      char* symbol_line = malloc(strlen(current_line));
-      symbol_line = strcpy(symbol_line, current_line);
-      symbol_line[strlen(symbol_line)-1] = '\0';
+      char *sym_name = malloc(strlen(cur_line));
+      sym_name = strcpy(sym_name, cur_line);
+      sym_name[strlen(sym_name) - 1] = '\0';
 
-      struct symbol *symbol = (struct symbol *)malloc(sizeof(struct symbol));
-      symbol->name = symbol_line; 
+      struct symbol *symbol = malloc(sizeof(struct symbol));
+      symbol->name = sym_name;
       symbol->address = current_address;
 
-      struct symbol* symbols = (struct symbol *)realloc(symbols_table->symbols, (symbols_table->symbols_table_size + 1) * sizeof(struct symbol));
-      symbols_table->symbols[symbols_table->symbols_table_size] = *symbol; 
-      symbols_table->symbols_table_size++;
+      struct symbol *symbols = (struct symbol *)realloc(sym_table->symbols, (sym_table->size + 1) * sizeof(struct symbol));
+      sym_table->symbols[sym_table->size] = *symbol;
+      sym_table->size++;
     }
     else
     {
-      struct instruction *instruction = from_line_to_instruction(current_line);
+      struct instruction *instruction = from_line_to_instruction(cur_line);
       struct instruction_ref instruction_ref = find_instruction_ref(instruction->operation);
       current_address += instruction_ref.length;
     }
   }
-  return symbols_table;
+  return sym_table;
 }
 
-void compile(struct parsed_file *file, struct symbols_table* symbols_table)
+void add_to_compiled_file(byte data, struct compiled_file *c_file)
 {
-  int current_address = 0;
-  for (int i = 0; i < file->nbr_lines; i++)
+  c_file->bytes = (byte *)realloc(c_file->bytes, (c_file->size + 1) * sizeof(byte));
+  c_file->bytes[c_file->size] = data;
+  c_file->size++;
+}
+
+struct compiled_file *compile(struct parsed_file *p_file, struct symbols_table *symbols_table)
+{
+  struct compiled_file *c_file = malloc(0);
+  c_file->bytes = malloc(0);
+  c_file->size = 0;
+
+  for (int i = 0; i < p_file->nbr_lines; i++)
   {
-    char *current_line = file->lines[i];
-    if (!is_empty_line(current_line) && !is_symbol(current_line))
+    char *current_line = p_file->lines[i];
+    if (!is_symbol(current_line))
     {
       struct instruction *instruction = from_line_to_instruction(current_line);
       struct instruction_ref instruction_ref = find_instruction_ref(instruction->operation);
+      bool a_data = false;
+      byte ins_code, data, ra, rb;
 
-      if (!strcmp(instruction_ref.operand_type, "RA_RB")){
-        byte ra = find_register_ref(instruction->operand1).code;
-        byte rb = find_register_ref(instruction->operand2).code;
-        byte ins_code = instruction_ref.code | (ra << 2)  | rb;
-        add_to_output_file(ins_code);
+      if (!strcmp(instruction_ref.operand_type, "RA_RB"))
+      {
+        ra = find_register_ref(instruction->operand1).code;
+        rb = find_register_ref(instruction->operand2).code;
+        ins_code = instruction_ref.code | (ra << 2) | rb;
       }
 
-      if (!strcmp(instruction_ref.operand_type, "RB")){
-        byte rb = find_register_ref(instruction->operand1).code;
-        byte ins_code = instruction_ref.code | rb;
-        add_to_output_file(ins_code);
+      if (!strcmp(instruction_ref.operand_type, "RB"))
+      {
+        rb = find_register_ref(instruction->operand1).code;
+        ins_code = instruction_ref.code | rb;
       }
 
-      if (!strcmp(instruction_ref.operand_type, "RB_VAL")){
-        byte rb = find_register_ref(instruction->operand1).code;
-        byte ins_code = instruction_ref.code | rb;
-        add_to_output_file(ins_code);
-        byte data = (byte) strtol(instruction->operand2, NULL, 10);
-        add_to_output_file(data);
+      if (!strcmp(instruction_ref.operand_type, "RB_VAL"))
+      {
+        a_data = true;
+        rb = find_register_ref(instruction->operand1).code;
+        ins_code = instruction_ref.code | rb;
+        data = (byte)strtol(instruction->operand2, NULL, 10);
       }
 
-      if(!strcmp(instruction_ref.operand_type, "ADDR")){
-        byte ins_code = instruction_ref.code;
-        byte addr;
-        for (int i = 0; i < symbols_table->symbols_table_size; i++)
+      if (!strcmp(instruction_ref.operand_type, "ADDR"))
+      {
+        a_data = true;
+        ins_code = instruction_ref.code;
+        for (int i = 0; i < symbols_table->size; i++)
         {
           if (!strcmp(symbols_table->symbols[i].name, instruction->operand1))
           {
-            addr = symbols_table->symbols[i].address;
+            data = symbols_table->symbols[i].address;
           }
-        } 
-        add_to_output_file(ins_code);
-        add_to_output_file(addr);
+        }
       }
 
-      if (!strcmp(instruction_ref.operand_type, "NO")){
-        byte ins_code = instruction_ref.code;
-        add_to_output_file(ins_code);
+      if (!strcmp(instruction_ref.operand_type, "NO"))
+      {
+        ins_code = instruction_ref.code;
+      }
+
+      add_to_compiled_file(ins_code, c_file);
+      if (a_data == true)
+      {
+        add_to_compiled_file(data, c_file);
       }
     }
   }
-  write_to_file();
+  return c_file;
 }
-
-
-
 
 int main(int argc, char *argv[])
 {
-  int symbols_table_size = 0;
   // if (argv[1] == NULL){
   //   printf("please enter a assembly file\n");
   //   exit(1);
   // }
-  struct parsed_file *parsed_file = load_file("fibonnaci.asm");
-  print_file(parsed_file->lines);
-  struct symbols_table* symbols_table = create_symbol_table(parsed_file);
-  print_symbols_table(symbols_table);
-  compile(parsed_file,symbols_table);
+  struct parsed_file *p_file = parse_file("fibonnaci.asm");
+  print_file(p_file->lines);
+  struct symbols_table *syms_table = create_symbol_table(p_file);
+  print_symbols_table(syms_table);
+  struct compiled_file *c_file = compile(p_file, syms_table);
+  write_to_file(c_file);
 }
