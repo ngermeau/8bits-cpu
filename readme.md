@@ -1,16 +1,26 @@
-# Minimalistic And Naive 8 Bit CPU Simulator And Assembler
+# Minimalistic And Naive 8 Bits CPU Simulator And Assembler
 
+Made for fun, c learning, computer learning.    
+
+![computer](screen.png)
+
+# Usage 
+
+```
+    $ make 
+    $ ./asm.bin fibonnaci.asm           # compile fibonnaci.asm
+    $ ./computer.bin fibonnaci.bin      # run fibonnaci program in 8 bits computer
+
+```
 
 # Todo
 
-- [ ] change asm program to include symbol
-- [ ] refactor for more clarity of code 
-- [ ] asm output filename = entry output filename 
-- [ ] remove global var  
-- [x] remove empty lines check everywhere and put it during loading of file
-- [ ] seriously loading file sucks, better way of doing this 
-- [ ] use typedef for struct 
 - [x] write your own assembly compiler   
+- [x] change asm program to include symbol
+- [x] refactor for more clarity of code 
+- [x] asm output filename = entry output filename 
+- [x] remove global var  
+- [x] remove empty lines check everywhere and put it during loading of file
 - [x] let a program be passed in parameter   
 - [x] add quick expanation for next cycle or exit 
 - [x] take carry flag as input for add, shr, shl    
@@ -25,7 +35,4 @@
 - [x] create make file 
 - [x] write fibonnaci   
 - [ ] write a correct readme (supported instructions etc...)    
-
-
-# Demo programs
-
+- [ ] seriously loading file sucks, better way of doing this 
