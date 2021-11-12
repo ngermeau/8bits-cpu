@@ -1,6 +1,6 @@
 # Minimalistic And Naive 8 Bits CPU Simulator And Assembler
 
-Made for fun, c learning, computer learning.    
+For fun and to explain my 9 years old how a computer basically work.   
 
 ![computer](screen.png)
 
