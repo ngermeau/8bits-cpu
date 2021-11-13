@@ -162,7 +162,7 @@ struct instruction_ref find_instruction_ref(char *operation)
       struct instruction_ref instruction_ref = instructions_ref_table[i];
       return instruction_ref;
     }
-  } // error management if no inst found 
+  } // error management if no inst found
 }
 
 struct register_ref find_register_ref(char *name)
@@ -175,7 +175,7 @@ struct register_ref find_register_ref(char *name)
       struct register_ref register_ref = registers_ref_table[i];
       return register_ref;
     }
-  }  //error management if no reg found 
+  } //error management if no reg found
 }
 
 struct instruction *from_line_to_instruction(char *line)
@@ -317,5 +317,5 @@ int main(int argc, char *argv[])
   struct compiled_file *c_file = compile(p_file, syms_table);
   char *o_filename = get_output_file_name(argv[1]);
   write_file(o_filename, c_file);
-  printf("successfully compiled in %s\n",o_filename);
+  printf("successfully compiled in %s\n", o_filename);
 }
