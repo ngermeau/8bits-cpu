@@ -163,6 +163,7 @@ struct instruction_ref find_instruction_ref(char *operation)
       return instruction_ref;
     }
   } 
+  perror("unknow instruction"); exit(1);
 }
 
 struct register_ref find_register_ref(char *name)
@@ -176,6 +177,7 @@ struct register_ref find_register_ref(char *name)
       return register_ref;
     }
   } 
+  perror("unknow register"); exit(1);
 }
 
 struct instruction *from_line_to_instruction(char *line)
