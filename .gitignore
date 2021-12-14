@@ -1,5 +1,7 @@
 # Various 
 *.log
+asm
+computer
 
 # Prerequisites
 *.d

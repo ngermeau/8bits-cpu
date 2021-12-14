@@ -1,6 +1,6 @@
 # Minimalistic And Naive 8 Bits CPU Simulator And Assembler
 
-For fun and to explain my 9 years old how a computer basically work.   
+For fun and to explain my 9 years old how a cpu basically work.   
 
 ![computer](screen.png)
 
@@ -8,8 +8,8 @@ For fun and to explain my 9 years old how a computer basically work.
 
 ```
     $ make                              # build  
-    $ ./asm.bin fibonnaci.asm           # compile fibonnaci.asm
-    $ ./computer.bin fibonnaci.bin      # run fibonnaci program in 8 bits computer
+    $ ./asm fibonnaci.asm               # assemble fibonnaci.asm
+    $ ./computer fibonnaci.bin          # run fibonnaci program in 8 bits cpu 
 
 ```
 
@@ -34,5 +34,4 @@ For fun and to explain my 9 years old how a computer basically work.
 - [x] verify not_and_or_xor    
 - [x] create make file 
 - [x] write fibonnaci   
-- [ ] write a correct readme (supported instructions etc...)    
-- [ ] seriously loading file sucks, better way of doing this 
+- [x] write a correct readme (supported instructions etc...)    
