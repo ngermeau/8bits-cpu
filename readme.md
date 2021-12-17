@@ -34,4 +34,3 @@ For fun and to explain my 9 years old how a cpu basically work.
 - [x] verify not_and_or_xor    
 - [x] create make file 
 - [x] write fibonnaci   
-- [x] write a correct readme (supported instructions etc...)    
