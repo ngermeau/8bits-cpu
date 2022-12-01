@@ -1,4 +1,4 @@
-# Naive 8 Bits CPU Simulator And Assembler
+# Candid 8 Bits CPU Simulator And Assembler
 
 For fun and to explain my 9 years old how a cpu basically work.   
 
